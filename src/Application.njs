@@ -1,36 +1,30 @@
 import Nullstack from 'nullstack';
-import './Application.scss';
-import Home from './Home';
-import OtherPage from './OtherPage'
+import { registerPlugin } from '@capacitor/core';
+
+const Echo = registerPlugin('Echo');
+const MortaroPlugin = registerPlugin('Mortaro');
 
 class Application extends Nullstack {
+
+  async echoTest() {
+    const { value } = await Echo.echo({ value: 'Hello World!' });
+    alert('Response from native:' + value);
+  }
+
+  async mortaroTest() {
+    const { value } = await MortaroPlugin.sayHello();
+  }
 
   prepare({ page }) {
     page.locale = 'en-US';
   }
 
-  renderHead() {
-    return (
-      <head>
-        <link 
-          href="https://fonts.gstatic.com" rel="preconnect" />
-        <link 
-          href="https://fonts.googleapis.com/css2?family=Crete+Round&family=Roboto&display=swap"
-          rel="stylesheet" />
-      </head> 
-    )
-  }
-
   render() {
     return (
       <main>
-        <Head />
-        <nav>
-          <a href="/"> Home </a>
-          <a href="/other-page"> Other Page </a>
-        </nav>
-        <Home route="/" />
-        <OtherPage route="*" />
+        <button onclick={this.mortaroTest}> Click here to Toast </button>
+        <br></br>
+        <button onclick={this.echoTest}> Click here to Alert </button>
       </main>
     )
   }
