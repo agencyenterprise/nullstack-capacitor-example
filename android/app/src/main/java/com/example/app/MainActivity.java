@@ -10,6 +10,6 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerPlugin(EchoPlugin.class);
-        registerPlugin(MortaroPlugin.class);
+        registerPlugin(HelloPlugin.class);
     }
 }

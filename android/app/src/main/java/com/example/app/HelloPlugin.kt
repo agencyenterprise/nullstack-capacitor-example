@@ -8,12 +8,12 @@ import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
 
-@CapacitorPlugin(name = "Mortaro")
-class MortaroPlugin : Plugin() {
+@CapacitorPlugin(name = "Hello")
+class HelloPlugin : Plugin() {
 
     @PluginMethod
     fun sayHello(call: PluginCall) {
-        Toast.makeText(context, "Hello Mortaro", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Hello :)", Toast.LENGTH_LONG).show()
 
         call.resolve()
     }

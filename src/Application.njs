@@ -2,7 +2,7 @@ import Nullstack from 'nullstack';
 import { registerPlugin } from '@capacitor/core';
 
 const Echo = registerPlugin('Echo');
-const MortaroPlugin = registerPlugin('Mortaro');
+const HelloPlugin = registerPlugin('Hello');
 
 class Application extends Nullstack {
 
@@ -11,8 +11,8 @@ class Application extends Nullstack {
     alert('Response from native:' + value);
   }
 
-  async mortaroTest() {
-    const { value } = await MortaroPlugin.sayHello();
+  async helloTest() {
+    const { value } = await HelloPlugin.sayHello();
   }
 
   prepare({ page }) {
@@ -22,9 +22,9 @@ class Application extends Nullstack {
   render() {
     return (
       <main>
-        <button onclick={this.mortaroTest}> Click here to Toast </button>
+        <button onclick={this.helloTest}> Click here to native Alert </button>
         <br></br>
-        <button onclick={this.echoTest}> Click here to Alert </button>
+        <button onclick={this.echoTest}> Click here to web Alert </button>
       </main>
     )
   }
