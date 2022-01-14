@@ -30,17 +30,17 @@ Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
 
 ## Android Plugin samples
 
-HelloPlugin.kt
-EchoPlugin.kt
+ - HelloPlugin.kt
+ - EchoPlugin.kt
 
 Always remember to register the plugins on the activity
 
 
 ## iOS Plugin samples
-HelloPlugin.m (link the plugin to capacitor)
-HelloPlugin.swift (native code to do your stuff)
+ - HelloPlugin.m (link the plugin to capacitor)
+ - HelloPlugin.swift (native code to do your stuff)
+ ---------------------------------------------------
+ - EchoPlugin.m (link the plugin to capacitor)
+ - EchoPlugin.swift (native code to do your stuff)
 
-EchoPlugin.m (link the plugin to capacitor)
-EchoPlugin.swift (native code to do your stuff)
-
-on iOS the .m files works to register the plugins
+Always remember to add the .m files to register the plugins
