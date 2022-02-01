@@ -17,7 +17,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
+        }
         release {
+            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
