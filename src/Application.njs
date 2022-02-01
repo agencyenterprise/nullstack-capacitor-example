@@ -20,6 +20,10 @@ class Application extends Nullstack {
     await AppSubscriptionPlugin.subscribe();
   }
 
+  async isSubscribed() {
+    await AppSubscriptionPlugin.isUserSubscribed();
+  }
+
   prepare({ page }) {
     page.locale = 'en-US';
   }
@@ -32,6 +36,8 @@ class Application extends Nullstack {
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
         <button onclick={this.subscribe}> Click here to subscribe </button>
+        <br></br><br></br><br></br><br></br>
+        <button onclick={this.isSubscribed}> Is subscribed? </button>
       </main>
     )
   }
