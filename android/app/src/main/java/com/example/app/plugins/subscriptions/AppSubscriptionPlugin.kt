@@ -16,15 +16,17 @@ class AppSubscriptionPlugin : Plugin() {
 
     companion object {
         private const val TAG = "AppSubscriptionPlugin"
+        private const val DEFAULT_SUBSCRIPTION_TYPE = BillingClient.SkuType.SUBS
+        private const val SUBSCRIPTION_PRODUCT_ID_KEY = "productId"
     }
+
+    private lateinit var billingClient: BillingClient
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
             Log.e(TAG, billingResult.debugMessage)
             purchases?.forEach { e -> Log.e(TAG, e.toString()) }
         }
-
-    private lateinit var billingClient: BillingClient
 
     override fun handleOnStart() {
         super.handleOnStart()
@@ -34,81 +36,102 @@ class AppSubscriptionPlugin : Plugin() {
             .build()
     }
 
-    private fun connectToGooglePlay(action: () -> Unit) {
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        action()
-                    }
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                Log.e(TAG, "Error while trying to connect with google play stablished")
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
-            }
-        })
-    }
-
-    suspend fun querySkuDetails() {
-        val skuList = ArrayList<String>()
-        skuList.add("gas")
-//        skuList.add("premium_upgrade")
-
-
-        // leverage querySkuDetails Kotlin extension function
-        val params = SkuDetailsParams
-            .newBuilder()
-            .setSkusList(skuList)
-            .setType(BillingClient.SkuType.SUBS)
-            .build()
-        val skuDetailsResult = withContext(Dispatchers.IO) {
-            billingClient.querySkuDetails(params)
-        }
-
-        val flowParams = BillingFlowParams.newBuilder()
-        skuDetailsResult.skuDetailsList?.forEach { e ->
-            flowParams
-                .setSkuDetails(e)
-        }
-
-        Log.e(TAG, skuDetailsResult.toString())
-
-        val response = billingClient.launchBillingFlow(activity, flowParams.build())
-        Log.e(TAG, "The result code is : ${response.debugMessage}")
-    }
-
-    suspend fun checkIfUserIsSubscribed() {
-        val productId = "gas"
-
-        val purchaseResult = withContext(Dispatchers.IO) {
-            billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS)
-        }
-
-        val result = purchaseResult.purchasesList.find { e -> e.skus.contains(productId)  } != null
-        Log.e(TAG, "User is subscribed : $result")
-    }
-
     @PluginMethod
     fun subscribe(call: PluginCall) {
+        val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY)
+        val skus = buildSkuDetails(productId)
 
         connectToGooglePlay {
-            CoroutineScope(Dispatchers.Main).launch {
-                querySkuDetails()
-            }
+            displaySubscriptionDialog(skus)
         }
     }
 
     @PluginMethod
     fun isUserSubscribed(call: PluginCall) {
+        val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY) ?: ""
         connectToGooglePlay {
-            CoroutineScope(Dispatchers.Main).launch {
-                checkIfUserIsSubscribed()
+            checkIfUserIsSubscribed(productId)
+        }
+    }
+
+    private fun connectToGooglePlay(action: () -> Unit) {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    action()
+                }
             }
+
+            override fun onBillingServiceDisconnected() {
+                Log.e(TAG, "Error while trying to connect with google play stablished")
+            }
+        })
+    }
+
+    private fun buildSkuDetailsParams(skuList: List<String>, skuType: String) =
+        SkuDetailsParams
+            .newBuilder()
+            .setSkusList(skuList)
+            .setType(skuType)
+            .build()
+
+    private fun buildBillingFlowParams(skuDetails: List<SkuDetails>?): BillingFlowParams {
+        val params = BillingFlowParams.newBuilder()
+        skuDetails?.forEach { detail -> params.setSkuDetails(detail) }
+
+        return params.build()
+    }
+
+    private fun buildSkuDetails(productId: String?): ArrayList<String> {
+        if (productId.isNullOrBlank()) {
+            return arrayListOf()
         }
 
+        val skus = ArrayList<String>()
+        skus.add(productId)
+
+        return skus
+    }
+
+    private suspend fun loadSkuDetails(params: SkuDetailsParams) = withContext(Dispatchers.IO) {
+        billingClient.querySkuDetails(params)
+    }
+
+    private suspend fun loadPurchases(skuType: String) = withContext(Dispatchers.IO) {
+        billingClient.queryPurchasesAsync(skuType)
+    }
+
+    private fun findUserSubscription(productId: String, purchases: List<Purchase>) =
+        purchases.find { e -> e.skus.contains(productId) } != null
+
+    private fun displaySubscriptionDialog(skuList: ArrayList<String>) {
+        CoroutineScope(Dispatchers.Main).launch {
+            if (skuList.isEmpty()) {
+                Log.e(TAG, "[displaySubscriptionDialog] : skuList is empty")
+            }
+
+            val skuDetailsParams = buildSkuDetailsParams(skuList, DEFAULT_SUBSCRIPTION_TYPE)
+            val skuDetailsResult = loadSkuDetails(skuDetailsParams)
+
+            val billingParams = buildBillingFlowParams(skuDetailsResult.skuDetailsList)
+
+            val result = billingClient.launchBillingFlow(activity, billingParams)
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+                Log.e(TAG, result.debugMessage)
+            }
+        }
+    }
+
+    private fun checkIfUserIsSubscribed(productId: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            if (productId.isBlank()) {
+                Log.e(TAG, "[checkIfUserIsSubscribed] : product id is empty")
+            }
+
+            val purchaseResult = loadPurchases(DEFAULT_SUBSCRIPTION_TYPE)
+            val result = findUserSubscription(productId, purchaseResult.purchasesList)
+            Log.e(TAG, "Subscribed? $result")
+        }
     }
 
     override fun handleOnDestroy() {

@@ -17,11 +17,11 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
-    await AppSubscriptionPlugin.subscribe();
+    await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
   }
 
   async isSubscribed() {
-    await AppSubscriptionPlugin.isUserSubscribed();
+    await AppSubscriptionPlugin.isUserSubscribed({ productId: 'gas' });
   }
 
   prepare({ page }) {
