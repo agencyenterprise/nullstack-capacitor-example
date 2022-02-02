@@ -17,6 +17,7 @@ public class AppSubscriptionPlugin: CAPPlugin {
     }
 
     @objc func subscribe(_ call: CAPPluginCall) {
+        SKPaymentQueue.default().add(self)
         fetchSubscriptionProduct()
     }
     
@@ -43,7 +44,6 @@ public class AppSubscriptionPlugin: CAPPlugin {
 extension AppSubscriptionPlugin: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         guard response.products.count > 0 else {
-            print("No products")
             return
         }
         //TODO: Make products fetching general
@@ -51,4 +51,27 @@ extension AppSubscriptionPlugin: SKProductsRequestDelegate {
 
         self.subscribe()
     }
+}
+
+extension AppSubscriptionPlugin: SKPaymentTransactionObserver {
+    public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        transactions.forEach({
+            switch $0.transactionState {
+            case .purchasing:
+                print("purchasing")
+            case .purchased:
+                SKPaymentQueue.default().finishTransaction($0)
+            case .failed:
+                SKPaymentQueue.default().finishTransaction($0)
+            case .restored:
+                print("restored")
+            case .deferred:
+                print("deferred")
+            @unknown default:
+                print("default")
+            }
+        })
+    }
+    
+    
 }
