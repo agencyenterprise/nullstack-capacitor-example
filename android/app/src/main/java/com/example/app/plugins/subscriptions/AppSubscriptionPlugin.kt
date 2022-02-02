@@ -20,7 +20,7 @@ class AppSubscriptionPlugin : Plugin() {
         private const val DEFAULT_SUBSCRIPTION_TYPE = BillingClient.SkuType.SUBS
         private const val SUBSCRIPTION_PRODUCT_ID_KEY = "productId"
         private const val USER_SUBSCRIBED_KEY = "subscribed"
-        private const val PRODUCT_ID_NULL_OR_EMPTY_MESSAGE = "Product is must not be null or empty"
+        private const val PRODUCT_ID_NULL_OR_EMPTY_MESSAGE = "Product must not be null or empty"
     }
 
     private lateinit var billingClient: BillingClient
@@ -44,6 +44,7 @@ class AppSubscriptionPlugin : Plugin() {
         val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY)
 
         if (productId.isNullOrBlank()) {
+            Log.d(TAG, "[subscribe]: $PRODUCT_ID_NULL_OR_EMPTY_MESSAGE")
             call.reject(PRODUCT_ID_NULL_OR_EMPTY_MESSAGE)
             return
         }
@@ -62,6 +63,7 @@ class AppSubscriptionPlugin : Plugin() {
         val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY)
 
         if (productId.isNullOrBlank()) {
+            Log.d(TAG, "[isUserSubscribed]: $PRODUCT_ID_NULL_OR_EMPTY_MESSAGE")
             call.reject(PRODUCT_ID_NULL_OR_EMPTY_MESSAGE)
             return
         }
@@ -135,10 +137,6 @@ class AppSubscriptionPlugin : Plugin() {
         } != null
 
     private suspend fun displaySubscriptionDialog(skuList: ArrayList<String>) {
-        if (skuList.isEmpty()) {
-            Log.e(TAG, "[displaySubscriptionDialog] : skuList is empty")
-        }
-
         val skuDetailsParams = buildSkuDetailsParams(skuList, DEFAULT_SUBSCRIPTION_TYPE)
         val skuDetailsResult = loadSkuDetails(skuDetailsParams)
 
@@ -151,11 +149,6 @@ class AppSubscriptionPlugin : Plugin() {
     }
 
     private suspend fun checkIfUserIsSubscribed(productId: String): Boolean {
-
-        if (productId.isBlank()) {
-            Log.e(TAG, "[checkIfUserIsSubscribed] : product id is empty")
-        }
-
         val purchaseResult = loadPurchases(DEFAULT_SUBSCRIPTION_TYPE)
         return findUserSubscription(productId, purchaseResult.purchasesList)
     }
