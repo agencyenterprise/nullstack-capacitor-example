@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @CapacitorPlugin
-class AppSubscriptionPlugin : Plugin() {
+class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
 
     companion object {
         private const val TAG = "AppSubscriptionPlugin"
@@ -138,4 +138,25 @@ class AppSubscriptionPlugin : Plugin() {
         super.handleOnDestroy()
         billingClient.endConnection()
     }
+
+    override fun onPurchasesUpdated(
+        billingResult: BillingResult,
+        list: MutableList<Purchase>?
+    ) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            handlePurchaseList(list)
+        }
+    }
+
+    private fun handlePurchaseList(purchases: List<Purchase>?){
+        if (null != purchases) {
+            for (purchase in purchases) {
+                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                    if (!Security.verifyPurchase(purchase.originalJson, purchase.signature))
+                        Log.e(TAG, "Invalid Signature")
+                }
+            }
+        }
+    }
+
 }
