@@ -38,6 +38,7 @@ class AppSubscriptionPlugin : Plugin() {
         super.handleOnStart()
         billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
             .build()
     }
 
@@ -53,7 +54,6 @@ class AppSubscriptionPlugin : Plugin() {
     @PluginMethod
     fun subscribe(call: PluginCall) {
         val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY)
-
         if (productId.isNullOrBlank()) {
             Log.d(TAG, "[subscribe]: $PRODUCT_ID_NULL_OR_EMPTY_MESSAGE")
             call.reject(PRODUCT_ID_NULL_OR_EMPTY_MESSAGE)
@@ -72,7 +72,6 @@ class AppSubscriptionPlugin : Plugin() {
     @PluginMethod
     fun isUserSubscribed(call: PluginCall) {
         val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY)
-
         if (productId.isNullOrBlank()) {
             Log.d(TAG, "[isUserSubscribed]: $PRODUCT_ID_NULL_OR_EMPTY_MESSAGE")
             call.reject(PRODUCT_ID_NULL_OR_EMPTY_MESSAGE)
