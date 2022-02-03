@@ -38,7 +38,6 @@ class AppSubscriptionPlugin : Plugin() {
         super.handleOnStart()
         billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
             .build()
     }
 
