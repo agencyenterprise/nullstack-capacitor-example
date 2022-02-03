@@ -10,32 +10,30 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
-    var subscriptionProduct: SKProduct?
-
-    enum Products: String, CaseIterable {
-        case subscription = "com.app.subscription"
+    var product: SKProduct?
+    
+    override public func load() {
+        fetchProduct(with: "com.app.subscription")
+        SKPaymentQueue.default().add(self)
     }
 
     @objc func subscribe(_ call: CAPPluginCall) {
-        SKPaymentQueue.default().add(self)
-        fetchSubscriptionProduct()
-    }
-    
-    @objc func isUserSubscribed(_ call: CAPPluginCall) {
-        //TODO:
-    }
-    
-    private func subscribe() {
-        guard let subscriptionProduct = subscriptionProduct else {
+        guard let subscriptionProduct = product else {
+            call.reject("Product is null")
             return
         }
         let payment = SKPayment(product: subscriptionProduct)
         SKPaymentQueue.default().add(payment)
+        call.resolve()
+    }
+
+    @objc func isUserSubscribed(_ call: CAPPluginCall) {
+        //TODO: Check the receipt, should it be done server side?
     }
     
-    private func fetchSubscriptionProduct() {
+    private func fetchProduct(with id: String) {
         //TODO: Make products fetching general
-        let request = SKProductsRequest(productIdentifiers: Set([Products.subscription.rawValue]))
+        let request = SKProductsRequest(productIdentifiers: Set([id]))
         request.delegate = self
         request.start()
     }
@@ -47,9 +45,7 @@ extension AppSubscriptionPlugin: SKProductsRequestDelegate {
             return
         }
         //TODO: Make products fetching general
-        self.subscriptionProduct = response.products.first
-
-        self.subscribe()
+        self.product = response.products.first
     }
 }
 
@@ -57,21 +53,17 @@ extension AppSubscriptionPlugin: SKPaymentTransactionObserver {
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         transactions.forEach({
             switch $0.transactionState {
-            case .purchasing:
-                print("purchasing")
-            case .purchased:
+            case .purchasing, .deferred:
+                break
+            case .purchased, .restored:
                 SKPaymentQueue.default().finishTransaction($0)
+                let receiptUrlString = Bundle.main.appStoreReceiptURL?.absoluteString
+                self.notifyListeners("subscriptionPurchased", data: ["receiptUrl": receiptUrlString!])
             case .failed:
                 SKPaymentQueue.default().finishTransaction($0)
-            case .restored:
-                print("restored")
-            case .deferred:
-                print("deferred")
             @unknown default:
-                print("default")
+                break
             }
         })
     }
-    
-    
 }
