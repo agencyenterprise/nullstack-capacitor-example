@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @CapacitorPlugin
-class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
+class AppSubscriptionPlugin : Plugin() {
 
     companion object {
         private const val TAG = "AppSubscriptionPlugin"
@@ -21,14 +21,17 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
         private const val SUBSCRIPTION_PRODUCT_ID_KEY = "productId"
         private const val USER_SUBSCRIBED_KEY = "subscribed"
         private const val PRODUCT_ID_NULL_OR_EMPTY_MESSAGE = "Product must not be null or empty"
+        private const val PURCHASED_STATE = Purchase.PurchaseState.PURCHASED
+        private const val STATUS_CODE_OK = BillingClient.BillingResponseCode.OK
     }
 
     private lateinit var billingClient: BillingClient
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
-            Log.e(TAG, billingResult.debugMessage)
-            purchases?.forEach { e -> Log.e(TAG, e.toString()) }
+            if (billingResult.responseCode == STATUS_CODE_OK) {
+                handlePurchasesList(purchases)
+            }
         }
 
     override fun handleOnStart() {
@@ -37,6 +40,15 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build()
+    }
+
+    override fun handleOnResume() {
+        super.handleOnResume()
+        if (billingClient.isReady) {
+            CoroutineScope(Dispatchers.Main).launch {
+                refreshPurchases()
+            }
+        }
     }
 
     @PluginMethod
@@ -76,6 +88,31 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
         }
     }
 
+    private fun shouldAcknowledgePurchase(purchase: Purchase) =
+        !purchase.isAcknowledged && purchase.purchaseState == PURCHASED_STATE
+
+    private fun isValidPurchase(purchase: Purchase) =
+        Security.verifyPurchase(purchase.originalJson, purchase.signature)
+
+    private suspend fun processPurchase(purchase: Purchase) {
+        val acknowledgePurchaseParams = buildAcknowledgePurchaseParams(purchase)
+        val ackPurchaseResult = acknowledgePurchase(acknowledgePurchaseParams)
+
+        if (ackPurchaseResult.responseCode != STATUS_CODE_OK) {
+            Log.e(TAG, ackPurchaseResult.debugMessage)
+        }
+    }
+
+    private fun handlePurchasesList(purchases: List<Purchase>?) {
+        purchases?.forEach { purchase ->
+            if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    processPurchase(purchase)
+                }
+            }
+        }
+    }
+
     private fun buildUserSubscribedResponse(productId: String, subscribed: Boolean): JSObject {
         val jsonObject = JSObject()
         jsonObject.put(SUBSCRIPTION_PRODUCT_ID_KEY, productId)
@@ -87,7 +124,7 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
     private fun connectToGooglePlay(action: () -> Unit) {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                if (billingResult.responseCode == STATUS_CODE_OK) {
                     action()
                 }
             }
@@ -104,6 +141,9 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
             .setSkusList(skuList)
             .setType(skuType)
             .build()
+
+    private fun buildAcknowledgePurchaseParams(purchase: Purchase) =
+        AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
 
     private fun buildBillingFlowParams(skuDetails: List<SkuDetails>?): BillingFlowParams {
         val params = BillingFlowParams.newBuilder()
@@ -123,6 +163,18 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
         return skus
     }
 
+    private suspend fun refreshPurchases() {
+        Log.d(TAG, "Refreshing purchases.")
+        val purchasesResult = loadPurchases(DEFAULT_SUBSCRIPTION_TYPE)
+        val billingResult = purchasesResult.billingResult
+        if (billingResult.responseCode != STATUS_CODE_OK) {
+            Log.e(TAG, "Problem getting subscriptions: " + billingResult.debugMessage)
+        } else {
+            handlePurchasesList(purchasesResult.purchasesList)
+        }
+        Log.d(TAG, "Refreshing purchases finished.")
+    }
+
     private suspend fun loadSkuDetails(params: SkuDetailsParams) = withContext(Dispatchers.IO) {
         billingClient.querySkuDetails(params)
     }
@@ -131,9 +183,14 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
         billingClient.queryPurchasesAsync(skuType)
     }
 
+    private suspend fun acknowledgePurchase(params: AcknowledgePurchaseParams) =
+        withContext(Dispatchers.IO) {
+            billingClient.acknowledgePurchase(params)
+        }
+
     private fun findUserSubscription(productId: String, purchases: List<Purchase>) =
         purchases.find { purchase ->
-            purchase.skus.contains(productId) && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+            purchase.skus.contains(productId) && purchase.purchaseState == PURCHASED_STATE
         } != null
 
     private suspend fun displaySubscriptionDialog(skuList: ArrayList<String>) {
@@ -143,7 +200,7 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
         val billingParams = buildBillingFlowParams(skuDetailsResult.skuDetailsList)
 
         val result = billingClient.launchBillingFlow(activity, billingParams)
-        if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+        if (result.responseCode != STATUS_CODE_OK) {
             Log.e(TAG, result.debugMessage)
         }
     }
@@ -157,25 +214,4 @@ class AppSubscriptionPlugin : Plugin(), PurchasesUpdatedListener {
         super.handleOnDestroy()
         billingClient.endConnection()
     }
-
-    override fun onPurchasesUpdated(
-        billingResult: BillingResult,
-        list: MutableList<Purchase>?
-    ) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-            handlePurchaseList(list)
-        }
-    }
-
-    private fun handlePurchaseList(purchases: List<Purchase>?){
-        if (null != purchases) {
-            for (purchase in purchases) {
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                    if (!Security.verifyPurchase(purchase.originalJson, purchase.signature))
-                        Log.e(TAG, "Invalid Signature")
-                }
-            }
-        }
-    }
-
 }
