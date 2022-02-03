@@ -44,3 +44,19 @@ Always remember to register the plugins on the activity
  - EchoPlugin.swift (native code to do your stuff)
 
 Always remember to add the .m files to register the plugins
+
+## Android environment setup
+
+- Open google play console : https://play.google.com/console/
+- Add the testers account to License Testing under Setting menu
+- Create an app
+- Publish a base version to internal testing
+- Add all testers accounts to the tester list
+- Make sure everyone accepts the testing invite, you can generate an invite url on the testing menu
+- Go to Products and create the in app products and subscriptions, and activate them
+
+## Regarding Android purchases
+
+- Every new purchase has its own unique ID, subscription status update information on that ID
+- Only PURCHASE state should be considered for activating the product, PENDING state occurs when the user desires it and wants to pay with means other than online and in the moment.
+- All information needed server regarding the purchase should be inside the Purchase object received in the PurchasesUpdatedListener
