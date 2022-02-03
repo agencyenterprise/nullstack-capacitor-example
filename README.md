@@ -57,6 +57,15 @@ Always remember to add the .m files to register the plugins
 
 ## Regarding Android purchases
 
-- Every new purchase has its own unique ID, subscription status update information on that ID
-- Only PURCHASE state should be considered for activating the product, PENDING state occurs when the user desires it and wants to pay with means other than online and in the moment.
-- All information needed server regarding the purchase should be inside the Purchase object received in the PurchasesUpdatedListener
+- Every new purchase has its own unique ID, subscription status updates information on that ID
+- At the time this does not support PENDING purchases neither one time products.
+- Only PURCHASE state should be considered for activating the product.
+- All information needed regarding the purchase should be inside the Purchase object received in the PurchasesUpdatedListene
+- Server side we receive the Purchase object to create webhooks and update information regarding those purchases.
+
+## Android Reference
+
+- [Setting up the Environment](https://developer.android.com/google/play/billing/getting-ready)
+- [Integrating the billing library](https://developer.android.com/google/play/billing/integrate)
+- [Subscription Statuses](https://developer.android.com/google/play/billing/subscriptions)
+- [Security practices](https://developer.android.com/google/play/billing/security)
