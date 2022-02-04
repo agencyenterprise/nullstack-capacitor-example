@@ -1,10 +1,9 @@
-package com.example.app.plugins.subscriptions
+package com.example.app.helper
 
 import android.util.Base64
 import android.util.Log
 
 import com.appsandbox.test.BuildConfig
-import java.io.IOException
 import java.lang.IllegalArgumentException
 import java.security.*
 import java.security.spec.X509EncodedKeySpec

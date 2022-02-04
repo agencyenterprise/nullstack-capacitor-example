@@ -1,9 +1,10 @@
-package com.example.app.plugins.subscriptions
+package com.example.app.presentation.subscriptions
 
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
+import com.example.app.helper.Security
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 @CapacitorPlugin
-class AppSubscriptionPlugin : Plugin() {
+class AppSubscription : Plugin() {
 
     companion object {
         private const val TAG = "AppSubscriptionPlugin"

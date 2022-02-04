@@ -3,7 +3,7 @@ import { registerPlugin } from '@capacitor/core';
 
 const Echo = registerPlugin('Echo');
 const HelloPlugin = registerPlugin('Hello');
-const AppSubscriptionPlugin = registerPlugin('AppSubscriptionPlugin');
+const AppSubscription = registerPlugin('AppSubscription');
 
 class Application extends Nullstack {
 
@@ -17,7 +17,7 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
-    await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
+    await AppSubscription.subscribe({ productId: 'gas' });
   }
 
   prepare({ page }) {
