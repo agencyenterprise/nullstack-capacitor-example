@@ -4,7 +4,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
-import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
@@ -21,7 +20,6 @@ class AppSubscriptionPlugin : Plugin() {
     companion object {
         private const val TAG = "AppSubscriptionPlugin"
         private const val SUBSCRIPTION_PRODUCT_ID_KEY = "productId"
-        private const val USER_SUBSCRIBED_KEY = "subscribed"
         private const val PRODUCT_ID_NULL_OR_EMPTY_MESSAGE = "Product must not be null or empty"
 
         private const val DEFAULT_SUBSCRIPTION_TYPE = BillingClient.SkuType.SUBS
@@ -95,20 +93,6 @@ class AppSubscriptionPlugin : Plugin() {
         }
     }
 
-    @PluginMethod
-    fun isUserSubscribed(call: PluginCall) {
-        val productId = call.getString(SUBSCRIPTION_PRODUCT_ID_KEY)
-        if (productId.isNullOrBlank()) {
-            Log.d(TAG, "[isUserSubscribed]: $PRODUCT_ID_NULL_OR_EMPTY_MESSAGE")
-            call.reject(PRODUCT_ID_NULL_OR_EMPTY_MESSAGE)
-            return
-        }
-        CoroutineScope(Dispatchers.Main).launch {
-            val result = checkIfUserIsSubscribed(productId)
-            call.resolve(buildUserSubscribedResponse(productId, result))
-        }
-    }
-
     private fun retryBillingServiceConnectionWithExponentialBackoff() {
         handler.postDelayed(
             { connectToGooglePlay() },
@@ -143,14 +127,6 @@ class AppSubscriptionPlugin : Plugin() {
                 }
             }
         }
-    }
-
-    private fun buildUserSubscribedResponse(productId: String, subscribed: Boolean): JSObject {
-        val jsonObject = JSObject()
-        jsonObject.put(SUBSCRIPTION_PRODUCT_ID_KEY, productId)
-        jsonObject.put(USER_SUBSCRIBED_KEY, subscribed)
-
-        return jsonObject
     }
 
     private fun connectToGooglePlay() = billingClient.startConnection(billingClientStateListener)
@@ -208,11 +184,6 @@ class AppSubscriptionPlugin : Plugin() {
             billingClient.acknowledgePurchase(params)
         }
 
-    private fun findUserSubscription(productId: String, purchases: List<Purchase>) =
-        purchases.find { purchase ->
-            purchase.skus.contains(productId) && purchase.purchaseState == PURCHASED_STATE
-        } != null
-
     private suspend fun displaySubscriptionDialog(skuList: ArrayList<String>) {
         val skuDetailsParams = buildSkuDetailsParams(skuList, DEFAULT_SUBSCRIPTION_TYPE)
         val skuDetailsResult = loadSkuDetails(skuDetailsParams)
@@ -223,11 +194,6 @@ class AppSubscriptionPlugin : Plugin() {
         if (result.responseCode != STATUS_CODE_OK) {
             Log.e(TAG, result.debugMessage)
         }
-    }
-
-    private suspend fun checkIfUserIsSubscribed(productId: String): Boolean {
-        val purchaseResult = loadPurchases(DEFAULT_SUBSCRIPTION_TYPE)
-        return findUserSubscription(productId, purchaseResult.purchasesList)
     }
 
     override fun handleOnDestroy() {
