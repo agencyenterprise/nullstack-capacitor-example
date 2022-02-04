@@ -19,9 +19,11 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
+            buildConfigField "String", "BASE_URL", '"http://localhost:5000/"'
         }
         release {
             buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
+            buildConfigField "String", "BASE_URL", '"http://localhost:5000/"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -51,7 +53,18 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+    def koinVersion = "2.1.6"
+    implementation "io.insert-koin:koin-androidx-viewmodel:$koinVersion"
+    implementation "io.insert-koin:koin-androidx-ext:$koinVersion"
+
+    def kotlinCoroutines = "1.4.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutines"
+
+    // Retrofit
+    def retrofitVersion = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 }
 
 apply from: 'capacitor.build.gradle'

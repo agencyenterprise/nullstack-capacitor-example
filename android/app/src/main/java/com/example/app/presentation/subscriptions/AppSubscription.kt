@@ -4,6 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
+import com.example.app.data.repository.model.purchases.PurchaseDetailRequest
+import com.example.app.helper.EventObserver
 import com.example.app.helper.Security
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -13,6 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.compat.ViewModelCompat.getViewModel
+import org.koin.androidx.viewmodel.compat.ViewModelCompat.viewModel
 import kotlin.math.min
 
 @CapacitorPlugin
@@ -36,6 +40,8 @@ class AppSubscription : Plugin() {
     private val handler = Handler(Looper.getMainLooper())
 
     private var reconnectMilliseconds = RECONNECT_TIMER_START_MILLISECONDS
+
+    private lateinit var viewModel: AppSubscriptionViewModel
 
     private val billingClientStateListener = object : BillingClientStateListener {
         override fun onBillingSetupFinished(billingResult: BillingResult) {
@@ -61,6 +67,12 @@ class AppSubscription : Plugin() {
 
     override fun handleOnStart() {
         super.handleOnStart()
+
+        viewModel = getViewModel(activity, AppSubscriptionViewModel::class.java)
+        viewModel.onPurchaseDetailRequestFinished.observe(activity, EventObserver { status ->
+            Log.d(TAG, "Purchase detail sent with $status")
+        })
+
         billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
@@ -117,6 +129,8 @@ class AppSubscription : Plugin() {
 
         if (ackPurchaseResult.responseCode != STATUS_CODE_OK) {
             Log.e(TAG, ackPurchaseResult.debugMessage)
+        } else {
+            viewModel.sendPurchaseDetails(PurchaseDetailRequest(purchase.purchaseToken))
         }
     }
 
