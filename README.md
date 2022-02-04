@@ -69,3 +69,4 @@ Always remember to add the .m files to register the plugins
 - [Integrating the billing library](https://developer.android.com/google/play/billing/integrate)
 - [Subscription Statuses](https://developer.android.com/google/play/billing/subscriptions)
 - [Security practices](https://developer.android.com/google/play/billing/security)
+- [Testing Subscriptions](https://qonversion.io/blog/the-ultimate-guide-to-subscription-testing-on-android/)
