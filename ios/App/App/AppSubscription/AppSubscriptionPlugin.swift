@@ -10,10 +10,11 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
+    var productId = "com.app.subscription"
     var product: SKProduct?
     
     override public func load() {
-        fetchProduct(with: "com.app.subscription")
+        fetchProduct(with: productId)
         SKPaymentQueue.default().add(self)
     }
 
