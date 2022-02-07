@@ -4,10 +4,12 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
+import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -121,11 +123,14 @@ class AppSubscriptionPlugin : Plugin() {
 
     private fun handlePurchasesList(purchases: List<Purchase>?) {
         purchases?.forEach { purchase ->
-            if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    processPurchase(purchase)
-                }
-            }
+            val jsonString = Gson().toJson(purchase)
+            val payload = JSObject(jsonString)
+            notifyListeners("subscriptionPurchased", payload)
+            //if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
+            //    CoroutineScope(Dispatchers.Main).launch {
+            //        processPurchase(purchase)
+            //    }
+            //}
         }
     }
 
