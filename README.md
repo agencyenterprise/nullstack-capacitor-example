@@ -65,8 +65,9 @@ Always remember to add the .m files to register the plugins
 
 ## Android Reference
 
-- [Setting up the Environment](https://developer.android.com/google/play/billing/getting-ready)
+- [Setting up the environment](https://developer.android.com/google/play/billing/getting-ready)
 - [Integrating the billing library](https://developer.android.com/google/play/billing/integrate)
-- [Subscription Statuses](https://developer.android.com/google/play/billing/subscriptions)
-- [Security practices](https://developer.android.com/google/play/billing/security)
-- [Testing Subscriptions](https://qonversion.io/blog/the-ultimate-guide-to-subscription-testing-on-android/)
+- [Subscription statuses](https://developer.android.com/google/play/billing/subscriptions)
+- [Security best practices](https://developer.android.com/google/play/billing/security)
+- [Testing subscriptions](https://qonversion.io/blog/the-ultimate-guide-to-subscription-testing-on-android/)
+- [Notificating listeners](https://capacitorjs.com/docs/plugins/android#plugin-events)
