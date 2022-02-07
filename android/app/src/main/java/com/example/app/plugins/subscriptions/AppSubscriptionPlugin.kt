@@ -4,14 +4,17 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
+import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import kotlin.math.min
 
 @CapacitorPlugin
@@ -47,7 +50,7 @@ class AppSubscriptionPlugin : Plugin() {
         }
 
         override fun onBillingServiceDisconnected() {
-            retryBillingServiceConnectionWithExponentialBackoff();
+            retryBillingServiceConnectionWithExponentialBackoff()
         }
     }
 
@@ -105,7 +108,8 @@ class AppSubscriptionPlugin : Plugin() {
     }
 
     private fun shouldAcknowledgePurchase(purchase: Purchase) =
-        !purchase.isAcknowledged && purchase.purchaseState == PURCHASED_STATE
+        false
+        //!purchase.isAcknowledged && purchase.purchaseState == PURCHASED_STATE
 
     private fun isValidPurchase(purchase: Purchase) =
         Security.verifyPurchase(purchase.originalJson, purchase.signature)
@@ -121,6 +125,9 @@ class AppSubscriptionPlugin : Plugin() {
 
     private fun handlePurchasesList(purchases: List<Purchase>?) {
         purchases?.forEach { purchase ->
+            val jsonString = Gson().toJson(purchase)
+            val payload = JSObject(jsonString)
+            notifyListeners("subscriptionPurchased", payload)
             if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
                 CoroutineScope(Dispatchers.Main).launch {
                     processPurchase(purchase)
