@@ -12,6 +12,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import kotlin.math.min
 
 @CapacitorPlugin
@@ -116,6 +120,8 @@ class AppSubscriptionPlugin : Plugin() {
 
         if (ackPurchaseResult.responseCode != STATUS_CODE_OK) {
             Log.e(TAG, ackPurchaseResult.debugMessage)
+        } else {
+            sendPurchase(purchase.purchaseToken)
         }
     }
 
@@ -194,6 +200,32 @@ class AppSubscriptionPlugin : Plugin() {
         if (result.responseCode != STATUS_CODE_OK) {
             Log.e(TAG, result.debugMessage)
         }
+    }
+
+    private fun sendPurchase(purchaseToken: String) {
+        val url = "http://localhost:4000"
+        val json = "application/json; charset=utf-8".toMediaTypeOrNull();
+        val body = "{\"purchaseToken\": \"$purchaseToken\"}".toRequestBody(json)
+
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build();
+
+        val call = client.newCall(request);
+
+        call.enqueue(object: Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                Log.e(TAG, "Purchase token sent successfully")
+            }
+
+        });
     }
 
     override fun handleOnDestroy() {

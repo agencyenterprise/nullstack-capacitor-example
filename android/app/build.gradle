@@ -52,6 +52,9 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+
+    def okhttp_version = '4.9.3'
+    implementation("com.squareup.okhttp3:okhttp:${okhttp_version}")
 }
 
 apply from: 'capacitor.build.gradle'
