@@ -17,15 +17,18 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
-    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
-      this.processSubscription(info);
+    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
+      this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
     await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
   }
 
-  static async processSubscription(purchase) {
-    console.log(`Transaction received : ${purchase}`);
-    console.log(purchase)
+  static async processSubscription({ purchase }) {
+    const {
+      packageName,
+      productId: subscriptionId,
+      purchaseToken: token } = purchase
+    console.log(`packageName : ${packageName}, subscriptionId: ${subscriptionId}, token: ${token}`);
   }
 
   prepare({ page }) {
