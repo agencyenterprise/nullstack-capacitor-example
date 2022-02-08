@@ -33,9 +33,31 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.app.subscription",
+          "productID" : "com.app.subscription.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Subscription Yearly",
+          "subscriptionGroupID" : "5B8730DC",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "2ABB65AC",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.app.subscription.monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Default Subscription",
+          "referenceName" : "Subscription Monthly",
           "subscriptionGroupID" : "5B8730DC",
           "type" : "RecurringSubscription"
         }
