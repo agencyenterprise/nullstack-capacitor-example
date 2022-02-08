@@ -16,11 +16,20 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
-  async subscribe() {
+  async subscribe({ productId }) {
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-    await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
+
+    await AppSubscriptionPlugin.subscribe({ productId: productId });
+  }
+
+  async subscribeYearly() {
+    await this.subscribe({ productId: 'com.app.subscription.yearly'});
+  }
+
+  async subscribeMonthly() {
+    await this.subscribe({ productId: 'com.app.subscription.monthly'});
   }
 
   static async processSubscription({ purchase }) {
@@ -42,7 +51,9 @@ class Application extends Nullstack {
         <br></br>
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
-        <button onclick={this.subscribe}> Click here to subscribe </button>
+        <button onclick={this.subscribeMonthly}> Click here to subscribe monthly </button>
+        <br></br>
+        <button onclick={this.subscribeYearly}> Click here to subscribe yearly </button>
       </main>
     )
   }

@@ -10,19 +10,25 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
-    var productId = "com.app.subscription"
-    var product: SKProduct?
+    let productIds: Set<String> = ["com.app.subscription.yearly", "com.app.subscription.monthly"]
+    var products: [SKProduct]?
     
     override public func load() {
-        fetchProduct(with: productId)
+        fetchProduct(with: productIds)
         SKPaymentQueue.default().add(self)
     }
 
     @objc func subscribe(_ call: CAPPluginCall) {
-        guard let subscriptionProduct = product else {
+        guard
+            let productId = call.options["productId"] as? String,
+            let subscriptionProduct = products?.first(where: { product in
+                return product.productIdentifier == productId
+            })
+        else {
             call.reject("Product is null")
             return
         }
+        
         let payment = SKPayment(product: subscriptionProduct)
         SKPaymentQueue.default().add(payment)
         call.resolve()
@@ -32,9 +38,8 @@ public class AppSubscriptionPlugin: CAPPlugin {
         //TODO: Check the receipt, should it be done server side?
     }
     
-    private func fetchProduct(with id: String) {
-        //TODO: Make products fetching general
-        let request = SKProductsRequest(productIdentifiers: Set([id]))
+    private func fetchProduct(with ids: Set<String>) {
+        let request = SKProductsRequest(productIdentifiers: ids)
         request.delegate = self
         request.start()
     }
@@ -45,8 +50,8 @@ extension AppSubscriptionPlugin: SKProductsRequestDelegate {
         guard response.products.count > 0 else {
             return
         }
-        //TODO: Make products fetching general
-        self.product = response.products.first
+        
+        self.products = response.products
     }
 }
 
