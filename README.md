@@ -44,3 +44,30 @@ Always remember to register the plugins on the activity
  - EchoPlugin.swift (native code to do your stuff)
 
 Always remember to add the .m files to register the plugins
+
+## Android environment setup
+
+- Open google play console : https://play.google.com/console/
+- Add the testers account to License Testing under Setting menu
+- Create an app
+- Publish a base version to internal testing
+- Add all testers accounts to the tester list
+- Make sure everyone accepts the testing invite, you can generate an invite url on the testing menu
+- Go to Products and create the in app products and subscriptions, and activate them
+
+## Regarding Android purchases
+
+- Every new purchase has its own unique ID, subscription status updates information on that ID
+- At the time this does not support PENDING purchases neither one time products.
+- Only PURCHASE state should be considered for activating the product.
+- All information needed regarding the purchase should be inside the Purchase object received in the PurchasesUpdatedListene
+- Server side we receive the Purchase object to create webhooks and update information regarding those purchases.
+
+## Android Reference
+
+- [Setting up the environment](https://developer.android.com/google/play/billing/getting-ready)
+- [Integrating the billing library](https://developer.android.com/google/play/billing/integrate)
+- [Subscription statuses](https://developer.android.com/google/play/billing/subscriptions)
+- [Security best practices](https://developer.android.com/google/play/billing/security)
+- [Testing subscriptions](https://qonversion.io/blog/the-ultimate-guide-to-subscription-testing-on-android/)
+- [Notificating listeners](https://capacitorjs.com/docs/plugins/android#plugin-events)
