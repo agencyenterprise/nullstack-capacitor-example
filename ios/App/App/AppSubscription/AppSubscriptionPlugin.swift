@@ -59,7 +59,7 @@ extension AppSubscriptionPlugin: SKPaymentTransactionObserver {
             case .purchased, .restored:
                 SKPaymentQueue.default().finishTransaction($0)
                 let receiptUrlString = Bundle.main.appStoreReceiptURL?.absoluteString
-                self.notifyListeners("subscriptionPurchased", data: ["receiptUrl": receiptUrlString!])
+                self.notifyListeners("onSubscriptionPurchased", data: ["receiptUrl": receiptUrlString!])
             case .failed:
                 SKPaymentQueue.default().finishTransaction($0)
             @unknown default:

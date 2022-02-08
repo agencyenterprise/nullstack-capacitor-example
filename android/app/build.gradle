@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.example.app"
+        applicationId "com.appsandbox.test"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -17,7 +17,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
+        }
         release {
+            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -39,12 +43,16 @@ dependencies {
 
     implementation "androidx.core:core-ktx:$androidxCoreVersion"
     implementation("com.android.billingclient:billing:$billingVersion")
+    implementation "com.android.billingclient:billing-ktx:$billingVersion"
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+    implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 apply from: 'capacitor.build.gradle'

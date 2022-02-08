@@ -17,20 +17,15 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
-    AppSubscriptionPlugin.addListener('subscriptionPurchased', (info) => {
-      //TODO: Get the receipt from the local url in info["receiptUrl"]
-      this.validateSubscription();
+    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
+      this.processSubscription(info);
     });
-    await AppSubscriptionPlugin.subscribe();
+    await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
   }
 
-  async isSubscribed() {
-     await AppSubscriptionPlugin.isUserSubscribed();
-  }
-
-  static async validateSubscription() {
-    //TODO: Validate the receipt and get its JSON response
-    console.log("Transaction received");
+  static async processSubscription(purchase) {
+    console.log(`Transaction received : ${purchase}`);
+    console.log(purchase)
   }
 
   prepare({ page }) {
@@ -43,10 +38,8 @@ class Application extends Nullstack {
         <button onclick={this.helloTest}> Click here to native Alert </button>
         <br></br>
         <button onclick={this.echoTest}> Click here to web Alert </button>
-	      <br></br><br></br><br></br><br></br>
-	      <button onclick={this.subscribe}> Click here to subscribe </button>
-	      <br></br><br></br><br></br><br></br>
-        <button onclick={this.isSubscribed}> Is subscribed? </button>
+        <br></br><br></br><br></br><br></br>
+        <button onclick={this.subscribe}> Click here to subscribe </button>
       </main>
     )
   }
