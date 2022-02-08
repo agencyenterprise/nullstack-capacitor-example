@@ -17,7 +17,15 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
+    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
+      this.processSubscription(info);
+    });
     await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
+  }
+
+  static async processSubscription(purchase) {
+    console.log(`Transaction received : ${purchase}`);
+    console.log(purchase)
   }
 
   prepare({ page }) {
