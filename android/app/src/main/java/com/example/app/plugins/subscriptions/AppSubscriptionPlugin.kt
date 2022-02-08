@@ -4,10 +4,12 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.android.billingclient.api.*
+import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +30,8 @@ class AppSubscriptionPlugin : Plugin() {
 
         private const val RECONNECT_TIMER_START_MILLISECONDS = 1L * 1000L
         private const val RECONNECT_TIMER_MAX_TIME_MILLISECONDS = 1000L * 60L * 15L // 15 minutes
+
+        private const val SUBSCRIPTION_NOTIFICATION_KEY = "onSubscriptionPurchased"
     }
 
     private lateinit var billingClient: BillingClient
@@ -110,21 +114,12 @@ class AppSubscriptionPlugin : Plugin() {
     private fun isValidPurchase(purchase: Purchase) =
         Security.verifyPurchase(purchase.originalJson, purchase.signature)
 
-    private suspend fun processPurchase(purchase: Purchase) {
-        val acknowledgePurchaseParams = buildAcknowledgePurchaseParams(purchase)
-        val ackPurchaseResult = acknowledgePurchase(acknowledgePurchaseParams)
-
-        if (ackPurchaseResult.responseCode != STATUS_CODE_OK) {
-            Log.e(TAG, ackPurchaseResult.debugMessage)
-        }
-    }
-
     private fun handlePurchasesList(purchases: List<Purchase>?) {
         purchases?.forEach { purchase ->
+            val jsonString = Gson().toJson(purchase)
+            val payload = JSObject(jsonString)
             if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    processPurchase(purchase)
-                }
+                notifyListeners(SUBSCRIPTION_NOTIFICATION_KEY, payload)
             }
         }
     }
@@ -137,9 +132,6 @@ class AppSubscriptionPlugin : Plugin() {
             .setSkusList(skuList)
             .setType(skuType)
             .build()
-
-    private fun buildAcknowledgePurchaseParams(purchase: Purchase) =
-        AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
 
     private fun buildBillingFlowParams(skuDetails: List<SkuDetails>?): BillingFlowParams {
         val params = BillingFlowParams.newBuilder()
@@ -178,11 +170,6 @@ class AppSubscriptionPlugin : Plugin() {
     private suspend fun loadPurchases(skuType: String) = withContext(Dispatchers.IO) {
         billingClient.queryPurchasesAsync(skuType)
     }
-
-    private suspend fun acknowledgePurchase(params: AcknowledgePurchaseParams) =
-        withContext(Dispatchers.IO) {
-            billingClient.acknowledgePurchase(params)
-        }
 
     private suspend fun displaySubscriptionDialog(skuList: ArrayList<String>) {
         val skuDetailsParams = buildSkuDetailsParams(skuList, DEFAULT_SUBSCRIPTION_TYPE)
