@@ -19,6 +19,11 @@ public class AppSubscriptionPlugin: CAPPlugin {
     }
 
     @objc func subscribe(_ call: CAPPluginCall) {
+        guard SKPaymentQueue.canMakePayments() else {
+            print("Can not make payments")
+            return
+        }
+        
         guard
             let productId = call.options["productId"] as? String,
             let subscriptionProduct = products?.first(where: { product in
