@@ -10,14 +10,22 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
-    let productIds: Set<String> = ["com.app.subscription.yearly", "com.app.subscription.monthly"]
-    var products: [SKProduct]?
+    private let productIds: Set<String> = ["com.app.subscription.yearly", "com.app.subscription.monthly"]
+    private var productsRequest: SKProductsRequest?
+    private var products: [SKProduct]?
     
     override public func load() {
-        fetchProduct(with: productIds)
+        fetchProducts(with: productIds)
         SKPaymentQueue.default().add(self)
     }
 
+    private func fetchProducts(with ids: Set<String>) {
+        productsRequest?.cancel()
+        productsRequest = SKProductsRequest(productIdentifiers: ids)
+        productsRequest?.delegate = self
+        productsRequest?.start()
+    }
+    
     @objc func subscribe(_ call: CAPPluginCall) {
         guard SKPaymentQueue.canMakePayments() else {
             print("Can not make payments")
@@ -25,7 +33,7 @@ public class AppSubscriptionPlugin: CAPPlugin {
         }
         
         guard
-            let productId = call.options["productId"] as? String,
+            let productId = call.getString("productId"),
             let subscriptionProduct = products?.first(where: { product in
                 return product.productIdentifier == productId
             })
@@ -43,10 +51,8 @@ public class AppSubscriptionPlugin: CAPPlugin {
         //TODO: Check the receipt, should it be done server side?
     }
     
-    private func fetchProduct(with ids: Set<String>) {
-        let request = SKProductsRequest(productIdentifiers: ids)
-        request.delegate = self
-        request.start()
+    public func restorePurchases() {
+        SKPaymentQueue.default().restoreCompletedTransactions()
     }
 }
 
@@ -58,20 +64,32 @@ extension AppSubscriptionPlugin: SKProductsRequestDelegate {
         
         self.products = response.products
     }
+    
+    public func request(_ request: SKRequest, didFailWithError error: Error) {
+        print("Failed to load list of products.")
+        print("Error: \(error.localizedDescription)")
+    }
 }
 
 extension AppSubscriptionPlugin: SKPaymentTransactionObserver {
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         transactions.forEach({
             switch $0.transactionState {
-            case .purchasing, .deferred:
-                break
             case .purchased, .restored:
                 SKPaymentQueue.default().finishTransaction($0)
                 let receiptUrlString = Bundle.main.appStoreReceiptURL?.absoluteString
                 self.notifyListeners("onSubscriptionPurchased", data: ["receiptUrl": receiptUrlString!])
             case .failed:
+                print("fail...")
+                if let transactionError = $0.error as NSError?,
+                   let localizedDescription = $0.error?.localizedDescription,
+                   transactionError.code != SKError.paymentCancelled.rawValue {
+                    print("Transaction Error: \(localizedDescription)")
+                }
+                
                 SKPaymentQueue.default().finishTransaction($0)
+            case .purchasing, .deferred:
+                break
             @unknown default:
                 break
             }
