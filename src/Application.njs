@@ -21,7 +21,11 @@ class Application extends Nullstack {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
 
-    await AppSubscriptionPlugin.subscribe({ productId: productId });
+    try {
+        await AppSubscriptionPlugin.subscribe({ productId: productId });
+    } catch (e) {
+        console.error(e);
+    }
   }
 
   async subscribeYearly() {
