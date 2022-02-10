@@ -15,8 +15,8 @@ public class AppSubscriptionPlugin: CAPPlugin {
     private var products: [SKProduct]?
     
     override public func load() {
+        StoreObserver.shared.delegate = self
         fetchProducts(with: productIds)
-        SKPaymentQueue.default().add(self)
     }
 
     private func fetchProducts(with ids: Set<String>) {
@@ -28,7 +28,7 @@ public class AppSubscriptionPlugin: CAPPlugin {
     
     @objc func subscribe(_ call: CAPPluginCall) {
         guard SKPaymentQueue.canMakePayments() else {
-            print("Can not make payments")
+            UIViewController.alert(Messages.status, message: Messages.cannotMakePayments)
             return
         }
         
@@ -46,53 +46,53 @@ public class AppSubscriptionPlugin: CAPPlugin {
         SKPaymentQueue.default().add(payment)
         call.resolve()
     }
-
-    @objc func isUserSubscribed(_ call: CAPPluginCall) {
-        //TODO: Check the receipt, should it be done server side?
-    }
-    
-    public func restorePurchases() {
-        SKPaymentQueue.default().restoreCompletedTransactions()
-    }
 }
+
+// MARK: - SKProductsRequestDelegate
 
 extension AppSubscriptionPlugin: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        guard response.products.count > 0 else {
-            return
-        }
-        
         self.products = response.products
-    }
-    
-    public func request(_ request: SKRequest, didFailWithError error: Error) {
-        print("Failed to load list of products.")
-        print("Error: \(error.localizedDescription)")
     }
 }
 
-extension AppSubscriptionPlugin: SKPaymentTransactionObserver {
-    public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        transactions.forEach({
-            switch $0.transactionState {
-            case .purchased, .restored:
-                SKPaymentQueue.default().finishTransaction($0)
-                let receiptUrlString = Bundle.main.appStoreReceiptURL?.absoluteString
-                self.notifyListeners("onSubscriptionPurchased", data: ["receiptUrl": receiptUrlString!])
-            case .failed:
-                print("fail...")
-                if let transactionError = $0.error as NSError?,
-                   let localizedDescription = $0.error?.localizedDescription,
-                   transactionError.code != SKError.paymentCancelled.rawValue {
-                    print("Transaction Error: \(localizedDescription)")
-                }
-                
-                SKPaymentQueue.default().finishTransaction($0)
-            case .purchasing, .deferred:
-                break
-            @unknown default:
-                break
-            }
-        })
+// MARK: - SKRequestDelegate
+
+extension AppSubscriptionPlugin: SKRequestDelegate {
+    public func requestDidFinish(_ request: SKRequest) {
+        //TODO: Do we need this?
     }
+    
+    public func request(_ request: SKRequest, didFailWithError error: Error) {
+        DispatchQueue.main.async {
+            UIViewController.alert(Messages.productRequestStatus, message: error.localizedDescription)
+        }
+    }
+}
+
+// MARK: - StoreObserverDelegate
+
+extension AppSubscriptionPlugin: StoreObserverDelegate {
+    func storeObserverSubscribeDidSucceed(_ receiptString: String) {
+        //TODO: Verify receipt and send to server!
+        self.notifyListeners("onSubscriptionPurchased", data: ["receiptString": receiptString])
+    }
+    
+    func storeObserverDidReceiveMessage(_ message: String) {
+        DispatchQueue.main.async {
+            UIViewController.alert(Messages.purchaseStatus, message: message)
+        }
+    }
+}
+
+// MARK: - Messages
+
+struct Messages {
+    static let status = "Status"
+    static let cannotMakePayments = "In-App Purchases may be restricted on your device. You are not authorized to make payments."
+    static let productRequestStatus = "Product Request Status"
+    static let purchaseOf = "Purchase of"
+    static let failed = "failed."
+    static let error = "Error: "
+    static let purchaseStatus = "Purchase Status"
 }
