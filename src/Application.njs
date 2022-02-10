@@ -16,7 +16,7 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
-  retrieveSubscriptionTime() {
+  getSubscriptionId() {
     const monthlyChecked = document.getElementById("monthly").checked
     if(monthlyChecked){
       return 'instill.monthly'
@@ -25,11 +25,11 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
-    const pID = this.retrieveSubscriptionTime()
+    const productId = this.getSubscriptionId()
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-    await AppSubscriptionPlugin.subscribe({ productId: pID});
+    await AppSubscriptionPlugin.subscribe({ productId });
   }
 
   static async processSubscription({ purchase }) {
