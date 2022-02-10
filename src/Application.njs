@@ -20,7 +20,7 @@ class Application extends Nullstack {
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-    await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
+    await AppSubscriptionPlugin.subscribe({ productId: 'google_api' });
   }
 
   static async processSubscription({ purchase }) {
