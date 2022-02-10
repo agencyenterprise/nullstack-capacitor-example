@@ -3,7 +3,7 @@ package com.example.app.plugins.subscriptions
 import android.util.Base64
 import android.util.Log
 
-import com.appsandbox.test.BuildConfig
+import com.appsandbox.test2.BuildConfig
 import java.io.IOException
 import java.lang.IllegalArgumentException
 import java.security.*
