@@ -16,11 +16,20 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
+  retrieveSubscriptionTime() {
+    const monthlyChecked = document.getElementById("monthly").checked
+    if(monthlyChecked){
+      return 'instill.monthly'
+    }
+    return 'instill.yearly'
+  }
+
   async subscribe() {
+    const pID = this.retrieveSubscriptionTime()
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-    await AppSubscriptionPlugin.subscribe({ productId: 'gas' });
+    await AppSubscriptionPlugin.subscribe({ productId: pID});
   }
 
   static async processSubscription({ purchase }) {
@@ -43,6 +52,12 @@ class Application extends Nullstack {
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
         <button onclick={this.subscribe}> Click here to subscribe </button>
+        <br></br>
+        <div>
+        <input type="radio" id="monthly" name="fav_language" value="MONTHLY" checked="true"> Monthly </input>
+        <br></br>
+        <input type="radio" id="yearly" name="fav_language" value="YEARLY"> Yearly </input>
+        </div>
       </main>
     )
   }
