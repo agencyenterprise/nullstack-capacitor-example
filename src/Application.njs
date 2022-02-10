@@ -18,7 +18,7 @@ class Application extends Nullstack {
 
   getSubscriptionId() {
     const monthlyChecked = document.getElementById("monthly").checked
-    if(monthlyChecked){
+    if (monthlyChecked) {
       return 'instill.monthly'
     }
     return 'instill.yearly'
@@ -54,9 +54,9 @@ class Application extends Nullstack {
         <button onclick={this.subscribe}> Click here to subscribe </button>
         <br></br>
         <div>
-        <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
-        <br></br>
-        <input type="radio" id="yearly" name="subscribe" value="YEARLY"> Yearly </input>
+          <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
+          <br></br>
+          <input type="radio" id="yearly" name="subscribe" value="YEARLY"> Yearly </input>
         </div>
       </main>
     )
