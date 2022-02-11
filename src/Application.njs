@@ -16,20 +16,24 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
-  async subscribe({ productId }) {
+  getSubscriptionId() {
+    const monthlyChecked = document.getElementById("monthly").checked
+    if (monthlyChecked) {
+      return 'instill.monthly'
+    }
+    return 'instill.yearly'
+  }
+
+  async subscribe() {
+    const productId = this.getSubscriptionId()
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-
-    await AppSubscriptionPlugin.subscribe({ productId: productId });
-  }
-
-  async subscribeYearly() {
-    await this.subscribe({ productId: 'com.app.subscription.yearly'});
-  }
-
-  async subscribeMonthly() {
-    await this.subscribe({ productId: 'com.app.subscription.monthly'});
+    try {
+      await AppSubscriptionPlugin.subscribe({ productId });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   static async processSubscription({ purchase }) {
@@ -51,9 +55,13 @@ class Application extends Nullstack {
         <br></br>
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
-        <button onclick={this.subscribeMonthly}> Click here to subscribe monthly </button>
+        <button onclick={this.subscribe}> Click here to subscribe </button>
         <br></br>
-        <button onclick={this.subscribeYearly}> Click here to subscribe yearly </button>
+        <div>
+          <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
+          <br></br>
+          <input type="radio" id="yearly" name="subscribe" value="YEARLY"> Yearly </input>
+        </div>
       </main>
     )
   }

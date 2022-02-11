@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.appsandbox.test"
+        applicationId "com.appsandbox.test2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -18,10 +18,10 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
+            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArnHDig4CykbnSgv2f78of6yUR13FEMb9aLiyy56Fp3Iv4CUufsu9C5bPj20PfFEHWVuhwSdblH/9pJPaQwBUkaip3oJtWEliwcj+tYEl3JNF8IJI2JpXTy8DDY8EGTxSZdSmKR+ARACnR7E7XuuXM31iCzP9xbvwZyQl76omiTK+EO+6nErOvRsQBBvbyBc/uiwt6uwnCkAfSUQLFp3ZmX77K9kbu+Z5bixrANHEffRiNRCT2mFphGcz11GbmkFbqDeUz+Vx126p6Q3kzs1JV1ahSSJzb+Aa4Dbg05hHSXVAZlevfOqICOy5UJnfp8vWvOd8+ZJuU2JhkZgLwkg/HwIDAQAB"'
         }
         release {
-            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjCtCrAw6b6KIthLKZLe9nNlQmXbDDnuWgh5lc9hhGpkVCJm+VWj/BSDZSGIcYJ3hAaJdb7kA+inX0OYTqFh/8PLCk1dLXMQcQJh23I7HxwLgBwRecoTrboO9jh2be20CUSayseewEYESGhXHfGmGEHC75Mflyl0vxpBM/vc21Lp/D0QGu9DnzIUqhOJmExTSMaIpnhqv/ZWXIl6khJHyVceeolLg2IkWZ6ovI639xEqatf1qXBnj/p+3FJu32lVPpWW//W2xirSIXoDcNoR/fbRyfPwtOUC7Kvsy8owIYn7IxLZ8rY5UrK7eo0UMHoq6lxjW4qEyeZaUCMBgDjWodQIDAQAB"'
+            buildConfigField "String", "SUBSCRIPTION_LICENSE_KEY", '"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArnHDig4CykbnSgv2f78of6yUR13FEMb9aLiyy56Fp3Iv4CUufsu9C5bPj20PfFEHWVuhwSdblH/9pJPaQwBUkaip3oJtWEliwcj+tYEl3JNF8IJI2JpXTy8DDY8EGTxSZdSmKR+ARACnR7E7XuuXM31iCzP9xbvwZyQl76omiTK+EO+6nErOvRsQBBvbyBc/uiwt6uwnCkAfSUQLFp3ZmX77K9kbu+Z5bixrANHEffRiNRCT2mFphGcz11GbmkFbqDeUz+Vx126p6Q3kzs1JV1ahSSJzb+Aa4Dbg05hHSXVAZlevfOqICOy5UJnfp8vWvOd8+ZJuU2JhkZgLwkg/HwIDAQAB"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
