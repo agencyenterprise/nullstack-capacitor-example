@@ -23,7 +23,7 @@ const acknowledgePurchase = async ({ packageName, productId: subscriptionId, pur
   });
 }
 
-const fetchSubscriptions = async (packageName) => {
+const fetchSubscriptions = async ({ packageName }) => {
   await configureGoogleClient();
   return await androidpublisher.inappproducts.list({ packageName });
 }

@@ -1,7 +1,6 @@
 import Nullstack from 'nullstack';
 import { registerPlugin } from '@capacitor/core';
-import { Device } from '@capacitor/device';
-import { acknowledgePurchase } from './server/google-api'
+import { acknowledgePurchase, fetchSubscriptions } from './server/google-api'
 
 const Echo = registerPlugin('Echo');
 const HelloPlugin = registerPlugin('Hello');
@@ -17,15 +16,32 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
-  async subscribe() {
-    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
+  async handleSubscriptionByDevice({ purchase, platform }) {
+    const IOS = 'ios';
+    const ANDROID = 'android';
+
+    if (platform === ANDROID) {
       this.processAndroidSubscription({ purchase: purchase.zzc.nameValuePairs });
+    } else if (platform === IOS){
+      this.processIosSubscription(purchase);
+    } else {
+      console.log('Unknown opering system!')
+    }
+  }
+
+  async subscribe() {
+    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
+      this.handleSubscriptionByDevice(info)
     });
 
     await AppSubscriptionPlugin.subscribe({ productId: 'google_api' });
   }
 
   static async processAndroidSubscription({ purchase }) {
+    if (!purchase) {
+      console.log('Purchase cannot be null');
+      return;
+    }
     try {
       const result = await acknowledgePurchase(purchase);
       console.log(result);
@@ -34,10 +50,22 @@ class Application extends Nullstack {
     }
   }
 
-  async testDeviceInfo() {
-    Device.getInfo()
-      .then(console.log)
-      .catch(console.log);
+  static async processIosSubscription({ purchase }) {
+    // TODO: needs to be implemented
+    console.log('Processing IOS purchase...');
+  }
+
+  async getSubscriptions() {
+    this.bla('com.appsandbox.test2');
+  }
+
+  static async bla(packageName) {
+    try {
+      const result = await fetchSubscriptions(packageName);
+      console.log(result.data.inappproduct);
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   prepare({ page }) {
@@ -54,7 +82,7 @@ class Application extends Nullstack {
         <button onclick={this.subscribe}> Click here to subscribe </button>
 
         <br></br><br></br><br></br><br></br>
-        <button onclick={this.testDeviceInfo}> test device info </button>
+        <button onclick={this.getSubscriptions}> Get subscriptions </button>
       </main>
     )
   }
