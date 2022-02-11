@@ -13,6 +13,7 @@ public class AppSubscriptionPlugin: CAPPlugin {
     private let productIds: Set<String> = ["instill.yearly", "instill.monthly"]
     private var productsRequest: SKProductsRequest?
     private var products: [SKProduct]?
+    private var subscriptionCallId: String?
     
     override public func load() {
         StoreObserver.shared.delegate = self
@@ -28,7 +29,7 @@ public class AppSubscriptionPlugin: CAPPlugin {
     
     @objc func subscribe(_ call: CAPPluginCall) {
         guard SKPaymentQueue.canMakePayments() else {
-            UIViewController.alert(Messages.status, message: Messages.cannotMakePayments)
+            call.reject(Messages.cannotMakePayments)
             return
         }
         
@@ -38,13 +39,16 @@ public class AppSubscriptionPlugin: CAPPlugin {
                 return product.productIdentifier == productId
             })
         else {
-            call.reject("Product is null")
+            call.reject(Messages.productsUnavailable)
             return
         }
         
+        //Save plugin call to release it later
+        bridge?.saveCall(call)
+        subscriptionCallId = call.callbackId
+        
         let payment = SKPayment(product: subscriptionProduct)
         SKPaymentQueue.default().add(payment)
-        call.resolve()
     }
 }
 
@@ -57,30 +61,50 @@ extension AppSubscriptionPlugin: SKProductsRequestDelegate {
 }
 
 // MARK: - SKRequestDelegate
-
-extension AppSubscriptionPlugin: SKRequestDelegate {
-    public func requestDidFinish(_ request: SKRequest) {
-        //TODO: Do we need this?
-    }
-    
-    public func request(_ request: SKRequest, didFailWithError error: Error) {
-        DispatchQueue.main.async {
-            UIViewController.alert(Messages.productRequestStatus, message: error.localizedDescription)
-        }
-    }
-}
+//
+//extension AppSubscriptionPlugin: SKRequestDelegate {
+//    public func requestDidFinish(_ request: SKRequest) {
+//        //TODO: Do we need this?
+//    }
+//
+//    public func request(_ request: SKRequest, didFailWithError error: Error) {
+//        if let callId = subscriptionCallId, let call = bridge?.savedCall(withID: callId) {
+//            call.reject(error.localizedDescription)
+//            bridge?.releaseCall(call)
+//        }
+//    }
+//}
 
 // MARK: - StoreObserverDelegate
 
 extension AppSubscriptionPlugin: StoreObserverDelegate {
     func storeObserverSubscribeDidSucceed(_ receiptString: String) {
+        releaseCall()
+        
         //TODO: Verify receipt and send to server!
         self.notifyListeners("onSubscriptionPurchased", data: ["receiptString": receiptString])
     }
     
     func storeObserverDidReceiveMessage(_ message: String) {
-        DispatchQueue.main.async {
-            UIViewController.alert(Messages.purchaseStatus, message: message)
+        releaseCall { call in
+            call.reject(message)
+        }
+    }
+    
+    func storeObserverDidCancel() {
+        releaseCall()
+    }
+    
+    typealias CAPReleaseCall = (CAPPluginCall) -> Void
+    
+    private func releaseCall(beforeRelease: CAPReleaseCall? = nil) {
+        if let callId = subscriptionCallId, let call = bridge?.savedCall(withID: callId) {
+            
+            if let beforeRelease = beforeRelease {
+                beforeRelease(call)
+            }
+            
+            bridge?.releaseCall(call)
         }
     }
 }
@@ -95,4 +119,5 @@ struct Messages {
     static let failed = "failed."
     static let error = "Error: "
     static let purchaseStatus = "Purchase Status"
+    static let productsUnavailable = "No products available"
 }

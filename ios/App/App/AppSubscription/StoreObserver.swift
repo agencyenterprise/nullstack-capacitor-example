@@ -11,6 +11,7 @@ import StoreKit
 protocol StoreObserverDelegate: AnyObject {
     func storeObserverSubscribeDidSucceed(_ receiptString: String)
     func storeObserverDidReceiveMessage(_ message: String)
+    func storeObserverDidCancel()
 }
 
 final class StoreObserver: NSObject {
@@ -50,6 +51,8 @@ final class StoreObserver: NSObject {
         // Do not send any notifications when the user cancels the purchase.
         if (transaction.error as? SKError)?.code != .paymentCancelled {
             self.delegate?.storeObserverDidReceiveMessage(message)
+        } else {
+            self.delegate?.storeObserverDidCancel()
         }
         
         SKPaymentQueue.default().finishTransaction(transaction)
