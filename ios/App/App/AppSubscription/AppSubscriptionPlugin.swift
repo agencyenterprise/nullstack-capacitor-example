@@ -10,7 +10,7 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
-    private let productIds: Set<String> = ["com.app.subscription.yearly", "com.app.subscription.monthly"]
+    private let productIds: Set<String> = ["instill.yearly", "instill.monthly"]
     private var productsRequest: SKProductsRequest?
     private var products: [SKProduct]?
     

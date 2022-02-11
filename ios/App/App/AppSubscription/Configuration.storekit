@@ -7,7 +7,7 @@
 
   ],
   "settings" : {
-
+    "_billingIssuesEnabled" : false
   },
   "subscriptionGroups" : [
     {
@@ -19,6 +19,9 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "0.99",
@@ -33,7 +36,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.app.subscription.yearly",
+          "productID" : "instill.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Subscription Yearly",
           "subscriptionGroupID" : "5B8730DC",
@@ -41,6 +44,9 @@
         },
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "0.99",
@@ -55,7 +61,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.app.subscription.monthly",
+          "productID" : "instill.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Subscription Monthly",
           "subscriptionGroupID" : "5B8730DC",
@@ -66,6 +72,6 @@
   ],
   "version" : {
     "major" : 1,
-    "minor" : 1
+    "minor" : 2
   }
 }
