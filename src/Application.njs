@@ -56,12 +56,12 @@ class Application extends Nullstack {
   }
 
   async getSubscriptions() {
-    this.bla('com.appsandbox.test2');
+    this.subscriptions();
   }
 
-  static async bla(packageName) {
+  static async subscriptions() {
     try {
-      const result = await fetchSubscriptions(packageName);
+      const result = await fetchSubscriptions({ packageName: process.env.PROJECT_PACKAGE_NAME });
       console.log(result.data.inappproduct);
     } catch(e) {
       console.log(e);
