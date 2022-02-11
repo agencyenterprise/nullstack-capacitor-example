@@ -29,7 +29,11 @@ class Application extends Nullstack {
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-    await AppSubscriptionPlugin.subscribe({ productId });
+    try {
+      await AppSubscriptionPlugin.subscribe({ productId });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   static async processSubscription({ purchase }) {
