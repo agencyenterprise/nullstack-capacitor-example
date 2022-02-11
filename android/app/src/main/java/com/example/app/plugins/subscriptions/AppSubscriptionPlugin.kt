@@ -116,8 +116,10 @@ class AppSubscriptionPlugin : Plugin() {
 
     private fun handlePurchasesList(purchases: List<Purchase>?) {
         purchases?.forEach { purchase ->
+            Log.e(TAG, purchase.toString())
             val jsonString = Gson().toJson(purchase)
             val payload = JSObject(jsonString)
+            Log.e(TAG, jsonString)
             if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
                 notifyListeners(SUBSCRIPTION_NOTIFICATION_KEY, payload)
             }
