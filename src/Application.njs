@@ -17,21 +17,9 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
-  async handleSubscriptionByDevice(device) {
-    if (device.platform === PlatformOS.Android) {
-      this.processAndroidSubscription({ purchase: purchase.zzc.nameValuePairs });
-    } else if (device.platform === PlatformOS.IOS){
-      // TODO: needs to be defined
-    } else {
-      console.log('Unknown opering system!')
-    }
-  }
-
   async subscribe() {
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
-      Device.getInfo()
-      .then(this.handleSubscriptionByDevice)
-      .catch(console.log);
+      this.processAndroidSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
 
     await AppSubscriptionPlugin.subscribe({ productId: 'google_api' });
