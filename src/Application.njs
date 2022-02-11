@@ -16,6 +16,17 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
+  getSubscriptionId() {
+    const MONTHLY_SUBSCRIPTION_ID = 'instill.monthly';
+    const YEARLY_SUBSCRIPTION_ID = 'instill.yearly';
+
+    const monthlyChecked = document.getElementById("monthly").checked;
+    if (monthlyChecked) {
+      return MONTHLY_SUBSCRIPTION_ID;
+    }
+    return YEARLY_SUBSCRIPTION_ID;
+  }
+
   async handleSubscriptionByDevice({ purchase, platform }) {
     const IOS = 'ios';
     const ANDROID = 'android';
@@ -30,11 +41,16 @@ class Application extends Nullstack {
   }
 
   async subscribe() {
-    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
-      this.handleSubscriptionByDevice(info)
-    });
+    try {
+      const productId = this.getSubscriptionId()
+      AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
+        this.handleSubscriptionByDevice(info)
+      });
 
-    await AppSubscriptionPlugin.subscribe({ productId: 'google_api' });
+      await AppSubscriptionPlugin.subscribe({ productId });
+    } catch(e) {
+      console.error(e);
+    }
   }
 
   static async processAndroidSubscription({ purchase }) {
@@ -83,6 +99,12 @@ class Application extends Nullstack {
 
         <br></br><br></br><br></br><br></br>
         <button onclick={this.getSubscriptions}> Get subscriptions </button>
+        <br></br>
+        <div>
+          <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
+          <br></br>
+          <input type="radio" id="yearly" name="subscribe" value="YEARLY"> Yearly </input>
+        </div>
       </main>
     )
   }
