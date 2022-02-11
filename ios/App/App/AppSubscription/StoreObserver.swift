@@ -26,16 +26,16 @@ final class StoreObserver: NSObject {
 
             do {
                 let receiptData = try Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped)
-                print(receiptData)
 
                 let receiptString = receiptData.base64EncodedString(options: [])
 
                 self.delegate?.storeObserverSubscribeDidSucceed(receiptString)
             }
             catch {
-                // TODO: Try to refresh receipt?
                 print("Couldn't read receipt data with error: " + error.localizedDescription)
             }
+        } else {
+            // TODO: Try to refresh receipt?            
         }
         
         SKPaymentQueue.default().finishTransaction(transaction)
@@ -87,44 +87,13 @@ extension StoreObserver: SKPaymentTransactionObserver {
                 handleRestored(transaction)
             case .failed:
                 handleFailed(transaction)
-            case .purchasing, .deferred:
+            case .purchasing:
+                break
+            case .deferred:
                 break
             @unknown default:
                 break
             }
         }
-    }
-    
-    /// Logs all transactions that have been removed from the payment queue.
-    public func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
-        //TODO: Do we need this?
-        
-        //        for transaction in transactions {
-        //            print("\(transaction.payment.productIdentifier) \(Messages.removed)")
-        //        }
-    }
-    
-    /// Called when an error occur while restoring purchases. Notify the user about the error.
-    public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
-        //TODO: Do we need this?
-        
-        //        if let error = error as? SKError, error.code != .paymentCancelled {
-        //            DispatchQueue.main.async {
-        //                self.delegate?.storeObserverDidReceiveMessage(error.localizedDescription)
-        //            }
-        //        }
-    }
-    
-    /// Called when all restorable transactions have been processed by the payment queue.
-    public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
-        //TODO: Do we need this?
-        
-        //        print(Messages.restorable)
-        
-        //        if !hasRestorablePurchases {
-        //            DispatchQueue.main.async {
-        //                self.delegate?.storeObserverDidReceiveMessage(Messages.noRestorablePurchases)
-        //            }
-        //        }
     }
 }

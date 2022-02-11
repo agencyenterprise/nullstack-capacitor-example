@@ -62,18 +62,13 @@ extension AppSubscriptionPlugin: SKProductsRequestDelegate {
 
 // MARK: - SKRequestDelegate
 //
-//extension AppSubscriptionPlugin: SKRequestDelegate {
-//    public func requestDidFinish(_ request: SKRequest) {
-//        //TODO: Do we need this?
-//    }
-//
-//    public func request(_ request: SKRequest, didFailWithError error: Error) {
-//        if let callId = subscriptionCallId, let call = bridge?.savedCall(withID: callId) {
-//            call.reject(error.localizedDescription)
-//            bridge?.releaseCall(call)
-//        }
-//    }
-//}
+extension AppSubscriptionPlugin: SKRequestDelegate {
+    public func request(_ request: SKRequest, didFailWithError error: Error) {
+        releaseCall { call in
+            call.reject(error.localizedDescription)
+        }
+    }
+}
 
 // MARK: - StoreObserverDelegate
 
@@ -81,7 +76,6 @@ extension AppSubscriptionPlugin: StoreObserverDelegate {
     func storeObserverSubscribeDidSucceed(_ receiptString: String) {
         releaseCall()
         
-        //TODO: Verify receipt and send to server!
         self.notifyListeners("onSubscriptionPurchased", data: ["receiptString": receiptString])
     }
     
@@ -97,11 +91,11 @@ extension AppSubscriptionPlugin: StoreObserverDelegate {
     
     typealias CAPReleaseCall = (CAPPluginCall) -> Void
     
-    private func releaseCall(beforeRelease: CAPReleaseCall? = nil) {
+    private func releaseCall(beforeReleaseHandler: CAPReleaseCall? = nil) {
         if let callId = subscriptionCallId, let call = bridge?.savedCall(withID: callId) {
             
-            if let beforeRelease = beforeRelease {
-                beforeRelease(call)
+            if let beforeReleaseHandler = beforeReleaseHandler {
+                beforeReleaseHandler(call)
             }
             
             bridge?.releaseCall(call)
