@@ -16,11 +16,24 @@ class Application extends Nullstack {
     const { value } = await HelloPlugin.sayHello();
   }
 
+  getSubscriptionId() {
+    const monthlyChecked = document.getElementById("monthly").checked
+    if (monthlyChecked) {
+      return 'instill.monthly'
+    }
+    return 'instill.yearly'
+  }
+
   async subscribe() {
+    const productId = this.getSubscriptionId()
     AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
       this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
     });
-    await AppSubscriptionPlugin.subscribe({ productId: 'google_api' });
+    try {
+      await AppSubscriptionPlugin.subscribe({ productId });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   static async processSubscription({ purchase }) {
@@ -43,6 +56,12 @@ class Application extends Nullstack {
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
         <button onclick={this.subscribe}> Click here to subscribe </button>
+        <br></br>
+        <div>
+          <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
+          <br></br>
+          <input type="radio" id="yearly" name="subscribe" value="YEARLY"> Yearly </input>
+        </div>
       </main>
     )
   }
