@@ -1,10 +1,10 @@
 import Nullstack from 'nullstack';
 import { registerPlugin } from '@capacitor/core';
+import { acknowledgePurchase, fetchSubscriptions } from './server/google-api'
 
 const Echo = registerPlugin('Echo');
 const HelloPlugin = registerPlugin('Hello');
 const AppSubscriptionPlugin = registerPlugin('AppSubscriptionPlugin');
-
 class Application extends Nullstack {
 
   async echoTest() {
@@ -17,31 +17,71 @@ class Application extends Nullstack {
   }
 
   getSubscriptionId() {
-    const monthlyChecked = document.getElementById("monthly").checked
+    const MONTHLY_SUBSCRIPTION_ID = 'instill.monthly';
+    const YEARLY_SUBSCRIPTION_ID = 'instill.yearly';
+
+    const monthlyChecked = document.getElementById("monthly").checked;
     if (monthlyChecked) {
-      return 'instill.monthly'
+      return MONTHLY_SUBSCRIPTION_ID;
     }
-    return 'instill.yearly'
+    return YEARLY_SUBSCRIPTION_ID;
+  }
+
+  async handleSubscriptionByDevice({ purchase, platform }) {
+    const IOS = 'ios';
+    const ANDROID = 'android';
+
+    if (platform === ANDROID) {
+      this.processAndroidSubscription({ purchase: purchase.zzc.nameValuePairs });
+    } else if (platform === IOS){
+      this.processIosSubscription(purchase);
+    } else {
+      console.log('Unknown opering system!')
+    }
   }
 
   async subscribe() {
-    const productId = this.getSubscriptionId()
-    AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (purchase) => {
-      this.processSubscription({ purchase: purchase.zzc.nameValuePairs });
-    });
     try {
+      const productId = this.getSubscriptionId()
+      AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
+        this.handleSubscriptionByDevice(info)
+      });
+
       await AppSubscriptionPlugin.subscribe({ productId });
-    } catch (e) {
+    } catch(e) {
       console.error(e);
     }
   }
 
-  static async processSubscription({ purchase }) {
-    const {
-      packageName,
-      productId: subscriptionId,
-      purchaseToken: token } = purchase
-    console.log(`packageName : ${packageName}, subscriptionId: ${subscriptionId}, token: ${token}`);
+  static async processAndroidSubscription({ purchase }) {
+    if (!purchase) {
+      console.log('Purchase cannot be null');
+      return;
+    }
+    try {
+      const result = await acknowledgePurchase(purchase);
+      console.log(result);
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  static async processIosSubscription({ purchase }) {
+    // TODO: needs to be implemented
+    console.log('Processing IOS purchase...');
+  }
+
+  async getSubscriptions() {
+    this.subscriptions();
+  }
+
+  static async subscriptions() {
+    try {
+      const result = await fetchSubscriptions({ packageName: process.env.PROJECT_PACKAGE_NAME });
+      console.log(result.data.inappproduct);
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   prepare({ page }) {
@@ -56,6 +96,9 @@ class Application extends Nullstack {
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
         <button onclick={this.subscribe}> Click here to subscribe </button>
+
+        <br></br><br></br><br></br><br></br>
+        <button onclick={this.getSubscriptions}> Get subscriptions </button>
         <br></br>
         <div>
           <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
