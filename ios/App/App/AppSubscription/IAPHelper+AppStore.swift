@@ -16,13 +16,13 @@ extension IAPHelper {
     /// - Parameter completion:     A closure that will be called when the results are returned from the App Store.
     /// - Parameter notification:   An IAPNotification with a value of .configurationNoProductIds,
     ///                             .requestProductsCompleted or .requestProductsFailed
-    public func fetchProductsFromAppStore(completion: @escaping (_ notification: IAPNotification) -> Void) {
+    public func fetchProductsFromAppStore(_ completion: ((IAPNotification) -> ())? = nil) {
         // Get localized info about our available in-app purchase products from the App Store
         requestProductsCompletion = completion  // Save the completion handler so it can be used in productsRequest(_:didReceive:)
         
         guard haveConfiguredProductIdentifiers else {
             DispatchQueue.main.async {
-                completion(.configurationNoProductIds)
+                completion?(.configurationNoProductIds)
             }
             return
         }
