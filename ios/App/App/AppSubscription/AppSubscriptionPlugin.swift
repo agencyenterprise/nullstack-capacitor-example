@@ -10,36 +10,32 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
-    private let productIds: Set<String> = ["instill.yearly", "instill.monthly"]
-    private var productsRequest: SKProductsRequest?
-    private var products: [SKProduct]?
     private var subscriptionCallId: String?
+    private let iap = IAPHelper.shared
     
     override public func load() {
-        StoreObserver.shared.delegate = self
-        fetchProducts(with: productIds)
-    }
-
-    private func fetchProducts(with ids: Set<String>) {
-        productsRequest?.cancel()
-        productsRequest = SKProductsRequest(productIdentifiers: ids)
-        productsRequest?.delegate = self
-        productsRequest?.start()
+        iap.fetchProductsFromAppStore { [weak self] notification in
+            if case let .requestProductsFailure(errorDescription) = notification {
+                self?.releaseCall { call in
+                    call.reject(errorDescription)
+                }
+            }
+        }
     }
     
     @objc func subscribe(_ call: CAPPluginCall) {
-        guard SKPaymentQueue.canMakePayments() else {
-            call.reject(Messages.cannotMakePayments)
+        guard iap.canMakePayments else {
+            call.reject("In-App Purchases may be restricted on your device. You are not authorized to make payments.")
             return
         }
         
         guard
             let productId = call.getString("productId"),
-            let subscriptionProduct = products?.first(where: { product in
+            let subscriptionProduct = iap.products?.first(where: { product in
                 return product.productIdentifier == productId
             })
         else {
-            call.reject(Messages.productsUnavailable)
+            call.reject("No products available")
             return
         }
         
@@ -47,53 +43,38 @@ public class AppSubscriptionPlugin: CAPPlugin {
         bridge?.saveCall(call)
         subscriptionCallId = call.callbackId
         
-        let payment = SKPayment(product: subscriptionProduct)
-        SKPaymentQueue.default().add(payment)
-    }
-}
-
-// MARK: - SKProductsRequestDelegate
-
-extension AppSubscriptionPlugin: SKProductsRequestDelegate {
-    public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        self.products = response.products
-    }
-}
-
-// MARK: - SKRequestDelegate
-//
-extension AppSubscriptionPlugin: SKRequestDelegate {
-    public func request(_ request: SKRequest, didFailWithError error: Error) {
-        releaseCall { call in
-            call.reject(error.localizedDescription)
+        iap.buyProduct(subscriptionProduct) { [weak self] notification in
+            guard let self = self else { return }
+            
+            switch notification {
+            case .purchaseAbortPurchaseInProgress:
+                call.reject("Purchase aborted because another purchase is being processed")
+            case .purchaseCancelled(message: let message):
+                self.releaseCall { call in
+                    call.reject(message)
+                }
+            case .purchaseFailure(message: let message):
+                self.releaseCall { call in
+                    call.reject(message)
+                }
+            case .purchaseSuccess(productId: _):
+                guard let receiptString = self.iap.getReceiptBase64EncodedString() else {
+                    self.releaseCall()
+                    return
+                }
+                
+                self.releaseCall()
+                self.notifyListeners("onSubscriptionPurchased", data: ["receiptString": receiptString])
+            default:
+                break
+            }
         }
-    }
-}
-
-// MARK: - StoreObserverDelegate
-
-extension AppSubscriptionPlugin: StoreObserverDelegate {
-    func storeObserverSubscribeDidSucceed(_ receiptString: String) {
-        releaseCall()
-        
-        self.notifyListeners("onSubscriptionPurchased", data: ["receiptString": receiptString])
-    }
-    
-    func storeObserverDidReceiveMessage(_ message: String) {
-        releaseCall { call in
-            call.reject(message)
-        }
-    }
-    
-    func storeObserverDidCancel() {
-        releaseCall()
     }
     
     typealias CAPReleaseCall = (CAPPluginCall) -> Void
     
     private func releaseCall(beforeReleaseHandler: CAPReleaseCall? = nil) {
         if let callId = subscriptionCallId, let call = bridge?.savedCall(withID: callId) {
-            
             if let beforeReleaseHandler = beforeReleaseHandler {
                 beforeReleaseHandler(call)
             }
@@ -101,17 +82,4 @@ extension AppSubscriptionPlugin: StoreObserverDelegate {
             bridge?.releaseCall(call)
         }
     }
-}
-
-// MARK: - Messages
-
-struct Messages {
-    static let status = "Status"
-    static let cannotMakePayments = "In-App Purchases may be restricted on your device. You are not authorized to make payments."
-    static let productRequestStatus = "Product Request Status"
-    static let purchaseOf = "Purchase of"
-    static let failed = "failed."
-    static let error = "Error: "
-    static let purchaseStatus = "Purchase Status"
-    static let productsUnavailable = "No products available"
 }

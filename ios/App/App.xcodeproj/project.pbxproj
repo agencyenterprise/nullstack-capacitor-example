@@ -12,7 +12,12 @@
 		0F6D5CA82790D6CC00BBD3B3 /* HelloPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6D5CA72790D6CC00BBD3B3 /* HelloPlugin.swift */; };
 		0F6D5CAA2790D7F500BBD3B3 /* HelloPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F6D5CA92790D7F500BBD3B3 /* HelloPlugin.m */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
-		4899923D27B5761D00AFADCF /* StoreObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4899923C27B5761D00AFADCF /* StoreObserver.swift */; };
+		487A1EE727BA8EFB00FE7EB0 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EE627BA8EFB00FE7EB0 /* IAPHelper.swift */; };
+		487A1EE927BA943A00FE7EB0 /* IAPHelper+AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EE827BA943A00FE7EB0 /* IAPHelper+AppStore.swift */; };
+		487A1EEB27BA94BB00FE7EB0 /* IAPNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */; };
+		487A1EED27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */; };
+		487A1EEF27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EEE27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift */; };
+		487A1EF127BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
@@ -31,7 +36,12 @@
 		0F6D5CA72790D6CC00BBD3B3 /* HelloPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloPlugin.swift; sourceTree = "<group>"; };
 		0F6D5CA92790D7F500BBD3B3 /* HelloPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloPlugin.m; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
-		4899923C27B5761D00AFADCF /* StoreObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreObserver.swift; sourceTree = "<group>"; };
+		487A1EE627BA8EFB00FE7EB0 /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
+		487A1EE827BA943A00FE7EB0 /* IAPHelper+AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+AppStore.swift"; sourceTree = "<group>"; };
+		487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPNotification.swift; sourceTree = "<group>"; };
+		487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+SKProductsRequestDelegate.swift"; sourceTree = "<group>"; };
+		487A1EEE27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+SKPaymentTransactionObserver.swift"; sourceTree = "<group>"; };
+		487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+SKRequestDelegate.swift"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -112,7 +122,12 @@
 			children = (
 				7E46468027AAB7AD00E87757 /* AppSubscriptionPlugin.m */,
 				7E46468227AAB86A00E87757 /* AppSubscriptionPlugin.swift */,
-				4899923C27B5761D00AFADCF /* StoreObserver.swift */,
+				487A1EE627BA8EFB00FE7EB0 /* IAPHelper.swift */,
+				487A1EE827BA943A00FE7EB0 /* IAPHelper+AppStore.swift */,
+				487A1EEE27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift */,
+				487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */,
+				487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */,
+				487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */,
 				7E46468527AABFC900E87757 /* Configuration.storekit */,
 			);
 			path = AppSubscription;
@@ -241,12 +256,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E46468327AAB86A00E87757 /* AppSubscriptionPlugin.swift in Sources */,
+				487A1EEF27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				487A1EF127BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift in Sources */,
 				7E46468127AAB7AD00E87757 /* AppSubscriptionPlugin.m in Sources */,
-				4899923D27B5761D00AFADCF /* StoreObserver.swift in Sources */,
+				487A1EE727BA8EFB00FE7EB0 /* IAPHelper.swift in Sources */,
 				0F6D5CA82790D6CC00BBD3B3 /* HelloPlugin.swift in Sources */,
 				0F6D5CAA2790D7F500BBD3B3 /* HelloPlugin.m in Sources */,
+				487A1EED27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift in Sources */,
 				0F6D5CA32790D60E00BBD3B3 /* EchoPlugin.swift in Sources */,
+				487A1EE927BA943A00FE7EB0 /* IAPHelper+AppStore.swift in Sources */,
+				487A1EEB27BA94BB00FE7EB0 /* IAPNotification.swift in Sources */,
 				0F6D5CA62790D65700BBD3B3 /* EchoPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
