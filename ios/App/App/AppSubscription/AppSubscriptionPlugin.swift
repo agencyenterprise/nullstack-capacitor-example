@@ -42,7 +42,9 @@ public class AppSubscriptionPlugin: CAPPlugin {
             
             switch notification {
             case .purchaseAbortPurchaseInProgress:
-                call.reject("Purchase aborted because another purchase is being processed")
+                self.releaseCall { call in
+                    call.reject("Purchase aborted because another purchase is being processed")
+                }
             case .purchaseCancelled(message: let message):
                 self.releaseCall { call in
                     call.reject(message)
@@ -53,12 +55,18 @@ public class AppSubscriptionPlugin: CAPPlugin {
                 }
             case .purchaseSuccess(productId: _):
                 guard let receiptString = self.iap.getReceiptBase64EncodedString() else {
-                    self.releaseCall()
+                    self.releaseCall { call in
+                        call.reject("Receipt parsing failed")
+                    }
                     return
                 }
                 
                 self.releaseCall()
-                self.notifyListeners("onSubscriptionPurchased", data: ["receiptString": receiptString])
+                self.notifyListeners("onSubscriptionPurchased", data: [
+                    "receipt": receiptString,
+                    "purchase": productId,
+                    "platform": "ios"
+                ])
             default:
                 break
             }
