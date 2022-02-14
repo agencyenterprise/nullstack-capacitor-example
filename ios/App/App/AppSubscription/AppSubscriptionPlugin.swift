@@ -14,13 +14,7 @@ public class AppSubscriptionPlugin: CAPPlugin {
     private let iap = IAPHelper.shared
     
     override public func load() {
-        iap.fetchProductsFromAppStore { [weak self] notification in
-            if case let .requestProductsFailure(errorDescription) = notification {
-                self?.releaseCall { call in
-                    call.reject(errorDescription)
-                }
-            }
-        }
+        iap.fetchProductsFromAppStore()
     }
     
     @objc func subscribe(_ call: CAPPluginCall) {
