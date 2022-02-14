@@ -34,7 +34,6 @@ public class IAPHelper: NSObject  {
     internal var requestProductsCompletion:     ((IAPNotification) -> Void)? = nil  // Completion handler when requesting products from the app store
     internal var requestReceiptCompletion:      ((IAPNotification) -> Void)? = nil  // Completion handler when requesting a receipt refresh from the App Store
     internal var purchaseCompletion:            ((IAPNotification?) -> Void)? = nil // Completion handler when purchasing a product from the App Store
-    internal var restorePurchasesCompletion:    ((IAPNotification?) -> Void)? = nil // Completion handler when requesting the app store to restore purchases
     internal var notificationCompletion:        ((IAPNotification?) -> Void)? = nil // Completion handler for general notifications
     
     internal var haveConfiguredProductIdentifiers: Bool {
@@ -57,7 +56,13 @@ public class IAPHelper: NSObject  {
 
     }
     
-    // MARK:- Configuration
+    /// Call this method to remove IAPHelper as an observer of the StoreKit payment queue.
+    /// This should be done from the AppDelgate applicationWillTerminate(_:) method.
+    public func removeFromPaymentQueue() {
+        SKPaymentQueue.default().remove(self)
+    }
+    
+    // MARK:- Receipt
     
     private var retryIntervalInSeconds: TimeInterval
     private let initialRetryIntervalInSeconds: TimeInterval = 1
@@ -65,12 +70,6 @@ public class IAPHelper: NSObject  {
     private let limitRetryIntervalInSeconds: TimeInterval = 61
     private let retryDecayRate = 2.0
 
-    /// Call this method to remove IAPHelper as an observer of the StoreKit payment queue.
-    /// This should be done from the AppDelgate applicationWillTerminate(_:) method.
-    public func removeFromPaymentQueue() {
-        SKPaymentQueue.default().remove(self)
-    }
-    
     public func getReceiptBase64EncodedString() -> String? {
         if let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
             FileManager.default.fileExists(atPath: appStoreReceiptURL.path) {
