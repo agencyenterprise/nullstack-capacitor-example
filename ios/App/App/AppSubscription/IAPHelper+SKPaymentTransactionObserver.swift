@@ -70,8 +70,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
                     self.purchaseCompletion?(.purchaseCancelled(message: message))
                 }
             } else {
-                message = "\(Messages.purchaseFailure) \(identifier)"
-                message += "\n\(Messages.error) \(e.localizedDescription)"
+                message = "\(Messages.purchaseFailure) \(identifier) \n\(Messages.error) \(e.localizedDescription)"
                 DispatchQueue.main.async {
                     self.purchaseCompletion?(.purchaseFailure(message: message))
                 }

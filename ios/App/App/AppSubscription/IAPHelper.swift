@@ -55,7 +55,6 @@ public class IAPHelper: NSObject  {
         // Add ourselves to the payment queue so we get App Store notifications
         SKPaymentQueue.default().add(self)
 
-//        setup()
     }
     
     // MARK:- Configuration
