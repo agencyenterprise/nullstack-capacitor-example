@@ -68,11 +68,10 @@ public class AppSubscriptionPlugin: CAPPlugin {
                 }
                 
                 self.releaseCall()
-                self.notifyListeners("onSubscriptionPurchased", data: [
-                    "receipt": receiptString,
-                    "purchase": productId,
-                    "platform": "ios"
-                ])
+                
+                let iapInfo = IAPInfo(purchase: receiptString)
+                
+                self.notifyListeners("onSubscriptionPurchased", data: iapInfo.asDictionary)
             default:
                 break
             }

@@ -24,6 +24,7 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		79BE177827BAD4EF005D3450 /* IAPInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE177727BAD4EF005D3450 /* IAPInfo.swift */; };
 		7E46468127AAB7AD00E87757 /* AppSubscriptionPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E46468027AAB7AD00E87757 /* AppSubscriptionPlugin.m */; };
 		7E46468327AAB86A00E87757 /* AppSubscriptionPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46468227AAB86A00E87757 /* AppSubscriptionPlugin.swift */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
@@ -50,6 +51,7 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		79BE177727BAD4EF005D3450 /* IAPInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPInfo.swift; sourceTree = "<group>"; };
 		7E46468027AAB7AD00E87757 /* AppSubscriptionPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppSubscriptionPlugin.m; sourceTree = "<group>"; };
 		7E46468227AAB86A00E87757 /* AppSubscriptionPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSubscriptionPlugin.swift; sourceTree = "<group>"; };
 		7E46468527AABFC900E87757 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */,
 				487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */,
 				487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */,
+				79BE177727BAD4EF005D3450 /* IAPInfo.swift */,
 				7E46468527AABFC900E87757 /* Configuration.storekit */,
 			);
 			path = AppSubscription;
@@ -255,6 +258,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79BE177827BAD4EF005D3450 /* IAPInfo.swift in Sources */,
 				7E46468327AAB86A00E87757 /* AppSubscriptionPlugin.swift in Sources */,
 				487A1EEF27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
