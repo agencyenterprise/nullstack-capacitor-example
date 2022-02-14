@@ -1,12 +1,13 @@
 const {PubSub} = require('@google-cloud/pubsub');
 
 const pubSubClient = new PubSub();
+const SUBSCRIPTION_ID = 'android_subscription_topic_test-sub';
+
+const SECONDS = 90 * 1000;
 
 const listenForMessages = () => {
-  // References an existing subscription
-  const subscription = pubSubClient.subscription('android_subscription_topic_test-sub');
+  const subscription = pubSubClient.subscription(SUBSCRIPTION_ID);
 
-  // Create an event handler to handle messages
   let messageCount = 0;
   const messageHandler = message => {
     console.log(`Received message ${message.id}:`);
@@ -23,7 +24,7 @@ const listenForMessages = () => {
   setTimeout(() => {
     subscription.removeListener('message', messageHandler);
     console.log(`${messageCount} message(s) received.`);
-  }, 90 * 1000);
+  }, SECONDS);
 }
 
 listenForMessages();
