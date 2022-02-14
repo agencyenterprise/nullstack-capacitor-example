@@ -16,6 +16,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 
+data class Info(val purchase: Purchase, val platform: String)
+
 @CapacitorPlugin
 class AppSubscriptionPlugin : Plugin() {
 
@@ -23,6 +25,7 @@ class AppSubscriptionPlugin : Plugin() {
         private const val TAG = "AppSubscriptionPlugin"
         private const val SUBSCRIPTION_PRODUCT_ID_KEY = "productId"
         private const val PRODUCT_ID_NULL_OR_EMPTY_MESSAGE = "Product must not be null or empty"
+        private const val PLATFORM_NAME = "android"
 
         private const val DEFAULT_SUBSCRIPTION_TYPE = BillingClient.SkuType.SUBS
         private const val PURCHASED_STATE = Purchase.PurchaseState.PURCHASED
@@ -116,7 +119,8 @@ class AppSubscriptionPlugin : Plugin() {
 
     private fun handlePurchasesList(purchases: List<Purchase>?) {
         purchases?.forEach { purchase ->
-            val jsonString = Gson().toJson(purchase)
+            val info = Info(purchase, PLATFORM_NAME)
+            val jsonString = Gson().toJson(info)
             val payload = JSObject(jsonString)
             if (isValidPurchase(purchase) && shouldAcknowledgePurchase(purchase)) {
                 notifyListeners(SUBSCRIPTION_NOTIFICATION_KEY, payload)

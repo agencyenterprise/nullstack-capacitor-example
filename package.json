@@ -16,6 +16,9 @@
     "@capacitor/android": "^3.0.2",
     "@capacitor/cli": "^3.0.2",
     "@capacitor/core": "^3.0.2",
-    "@capacitor/ios": "^3.3.4"
+    "@capacitor/device": "^1.1.2",
+    "@capacitor/ios": "^3.3.4",
+    "googleapis": "^95.0.0",
+    "googleauth": "^3.0.2"
   }
 }
