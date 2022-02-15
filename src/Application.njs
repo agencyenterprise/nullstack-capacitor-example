@@ -44,11 +44,13 @@ class Application extends Nullstack {
     try {
       const productId = this.getSubscriptionId()
       AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
+        AppSubscriptionPlugin.removeAllListeners
         this.handleSubscriptionByDevice(info)
       });
 
       await AppSubscriptionPlugin.subscribe({ productId });
     } catch(e) {
+      AppSubscriptionPlugin.removeAllListeners
       console.error(e);
     }
   }
@@ -91,20 +93,22 @@ class Application extends Nullstack {
   render() {
     return (
       <main>
+        <br></br><br></br><br></br>
         <button onclick={this.helloTest}> Click here to native Alert </button>
         <br></br>
         <button onclick={this.echoTest}> Click here to web Alert </button>
         <br></br><br></br><br></br><br></br>
         <button onclick={this.subscribe}> Click here to subscribe </button>
 
-        <br></br><br></br><br></br><br></br>
-        <button onclick={this.getSubscriptions}> Get subscriptions </button>
-        <br></br>
+        <br></br><br></br>
         <div>
           <input type="radio" id="monthly" name="subscribe" value="MONTHLY" checked="true"> Monthly </input>
-          <br></br>
+          <br></br><br></br>
           <input type="radio" id="yearly" name="subscribe" value="YEARLY"> Yearly </input>
         </div>
+
+        <br></br><br></br><br></br>
+        <button onclick={this.getSubscriptions}> Get Android subscriptions </button>
       </main>
     )
   }
