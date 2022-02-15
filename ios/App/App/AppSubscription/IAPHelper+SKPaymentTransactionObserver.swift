@@ -18,7 +18,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
             case .deferred:
                 purchaseDeferred(transaction: transaction)
             case .purchasing:
-                purchaseInProgress(transaction: transaction)
+                break
             case .restored:
                 break
             default:
@@ -114,15 +114,6 @@ extension IAPHelper: SKPaymentTransactionObserver {
         }
 
         // Do NOT call SKPaymentQueue.default().finishTransaction() for .deferred status
-    }
-
-    private func purchaseInProgress(transaction: SKPaymentTransaction) {
-        // The product purchase transaction has started. Do not allow access to the product yet
-        DispatchQueue.main.async {
-            self.purchaseCompletion?(.purchaseInProgress(productId: transaction.payment.productIdentifier))
-        }
-        
-        // Do NOT call SKPaymentQueue.default().finishTransaction() for .purchasing status
     }
 }
 

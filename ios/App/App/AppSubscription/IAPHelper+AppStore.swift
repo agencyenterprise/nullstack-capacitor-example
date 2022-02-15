@@ -17,7 +17,6 @@ extension IAPHelper {
     /// - Parameter notification:   An IAPNotification with a value of .configurationNoProductIds,
     ///                             .requestProductsCompleted or .requestProductsFailed
     public func fetchProductsFromAppStore(_ completion: ((IAPNotification) -> ())? = nil) {
-        // Get localized info about our available in-app purchase products from the App Store
         requestProductsCompletion = completion  // Save the completion handler so it can be used in productsRequest(_:didReceive:)
         
         guard haveConfiguredProductIdentifiers else {
