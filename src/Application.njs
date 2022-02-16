@@ -44,13 +44,13 @@ class Application extends Nullstack {
     try {
       const productId = this.getSubscriptionId()
       AppSubscriptionPlugin.addListener('onSubscriptionPurchased', (info) => {
-        AppSubscriptionPlugin.removeAllListeners
+        AppSubscriptionPlugin.removeAllListeners();
         this.handleSubscriptionByDevice(info)
       });
 
       await AppSubscriptionPlugin.subscribe({ productId });
     } catch(e) {
-      AppSubscriptionPlugin.removeAllListeners
+      AppSubscriptionPlugin.removeAllListeners();
       console.error(e);
     }
   }
