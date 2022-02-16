@@ -10,61 +10,77 @@ import StoreKit
 
 @objc(AppSubscriptionPlugin)
 public class AppSubscriptionPlugin: CAPPlugin {
-    var productId = "com.app.subscription"
-    var product: SKProduct?
+    private var subscriptionCallId: String?
+    private let iap = IAPHelper.shared
     
     override public func load() {
-        fetchProduct(with: productId)
-        SKPaymentQueue.default().add(self)
-    }
-
-    @objc func subscribe(_ call: CAPPluginCall) {
-        guard let subscriptionProduct = product else {
-            call.reject("Product is null")
-            return
-        }
-        let payment = SKPayment(product: subscriptionProduct)
-        SKPaymentQueue.default().add(payment)
-        call.resolve()
-    }
-
-    @objc func isUserSubscribed(_ call: CAPPluginCall) {
-        //TODO: Check the receipt, should it be done server side?
+        iap.fetchProductsFromAppStore()
     }
     
-    private func fetchProduct(with id: String) {
-        //TODO: Make products fetching general
-        let request = SKProductsRequest(productIdentifiers: Set([id]))
-        request.delegate = self
-        request.start()
-    }
-}
-
-extension AppSubscriptionPlugin: SKProductsRequestDelegate {
-    public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        guard response.products.count > 0 else {
+    @objc func subscribe(_ call: CAPPluginCall) {
+        guard iap.canMakePayments else {
+            call.reject("In-App Purchases may be restricted on your device. You are not authorized to make payments.")
             return
         }
-        //TODO: Make products fetching general
-        self.product = response.products.first
-    }
-}
-
-extension AppSubscriptionPlugin: SKPaymentTransactionObserver {
-    public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        transactions.forEach({
-            switch $0.transactionState {
-            case .purchasing, .deferred:
-                break
-            case .purchased, .restored:
-                SKPaymentQueue.default().finishTransaction($0)
-                let receiptUrlString = Bundle.main.appStoreReceiptURL?.absoluteString
-                self.notifyListeners("onSubscriptionPurchased", data: ["receiptUrl": receiptUrlString!])
-            case .failed:
-                SKPaymentQueue.default().finishTransaction($0)
-            @unknown default:
+        
+        guard
+            let productId = call.getString("productId"),
+            let subscriptionProduct = iap.products?.first(where: { product in
+                return product.productIdentifier == productId
+            })
+        else {
+            call.reject("No products available")
+            return
+        }
+        
+        //Save plugin call to release it later
+        bridge?.saveCall(call)
+        subscriptionCallId = call.callbackId
+        
+        iap.buyProduct(subscriptionProduct) { [weak self] notification in
+            guard let self = self else { return }
+            
+            switch notification {
+            case .purchaseAbortPurchaseInProgress:
+                self.releaseCall { call in
+                    call.reject("Purchase aborted because another purchase is being processed")
+                }
+            case .purchaseCancelled(message: let message):
+                self.releaseCall { call in
+                    call.reject(message)
+                }
+            case .purchaseFailure(message: let message):
+                self.releaseCall { call in
+                    call.reject(message)
+                }
+            case .purchaseSuccess(productId: _):
+                guard let receiptString = self.iap.getReceiptBase64EncodedString() else {
+                    self.releaseCall { call in
+                        call.reject("Receipt parsing failed")
+                    }
+                    return
+                }
+                
+                self.releaseCall()
+                
+                let iapInfo = IAPInfo(purchase: receiptString)
+                
+                self.notifyListeners("onSubscriptionPurchased", data: iapInfo.asDictionary)
+            default:
                 break
             }
-        })
+        }
+    }
+    
+    typealias CAPReleaseCall = (CAPPluginCall) -> Void
+    
+    private func releaseCall(beforeReleaseHandler: CAPReleaseCall? = nil) {
+        if let callId = subscriptionCallId, let call = bridge?.savedCall(withID: callId) {
+            if let beforeReleaseHandler = beforeReleaseHandler {
+                beforeReleaseHandler(call)
+            }
+            
+            bridge?.releaseCall(call)
+        }
     }
 }

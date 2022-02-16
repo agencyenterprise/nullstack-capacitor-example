@@ -9,6 +9,6 @@
 
 CAP_PLUGIN(AppSubscriptionPlugin, "AppSubscriptionPlugin",
            CAP_PLUGIN_METHOD(subscribe, CAPPluginReturnPromise);
-           CAP_PLUGIN_METHOD(isUserSubscribed, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(removeAllListeners, CAPPluginReturnPromise);
 )
 

@@ -12,12 +12,20 @@
 		0F6D5CA82790D6CC00BBD3B3 /* HelloPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F6D5CA72790D6CC00BBD3B3 /* HelloPlugin.swift */; };
 		0F6D5CAA2790D7F500BBD3B3 /* HelloPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F6D5CA92790D7F500BBD3B3 /* HelloPlugin.m */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
+		48519C8B27BAF0B600C8504C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48519C8A27BAF0B600C8504C /* StoreKit.framework */; };
+		487A1EE727BA8EFB00FE7EB0 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EE627BA8EFB00FE7EB0 /* IAPHelper.swift */; };
+		487A1EE927BA943A00FE7EB0 /* IAPHelper+AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EE827BA943A00FE7EB0 /* IAPHelper+AppStore.swift */; };
+		487A1EEB27BA94BB00FE7EB0 /* IAPNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */; };
+		487A1EED27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */; };
+		487A1EEF27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EEE27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift */; };
+		487A1EF127BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
 		504EC30D1FED79650016851F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30B1FED79650016851F /* Main.storyboard */; };
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		79BE177827BAD4EF005D3450 /* IAPInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE177727BAD4EF005D3450 /* IAPInfo.swift */; };
 		7E46468127AAB7AD00E87757 /* AppSubscriptionPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E46468027AAB7AD00E87757 /* AppSubscriptionPlugin.m */; };
 		7E46468327AAB86A00E87757 /* AppSubscriptionPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E46468227AAB86A00E87757 /* AppSubscriptionPlugin.swift */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
@@ -30,6 +38,13 @@
 		0F6D5CA72790D6CC00BBD3B3 /* HelloPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloPlugin.swift; sourceTree = "<group>"; };
 		0F6D5CA92790D7F500BBD3B3 /* HelloPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloPlugin.m; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
+		48519C8A27BAF0B600C8504C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		487A1EE627BA8EFB00FE7EB0 /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
+		487A1EE827BA943A00FE7EB0 /* IAPHelper+AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+AppStore.swift"; sourceTree = "<group>"; };
+		487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPNotification.swift; sourceTree = "<group>"; };
+		487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+SKProductsRequestDelegate.swift"; sourceTree = "<group>"; };
+		487A1EEE27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+SKPaymentTransactionObserver.swift"; sourceTree = "<group>"; };
+		487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IAPHelper+SKRequestDelegate.swift"; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -38,6 +53,7 @@
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		79BE177727BAD4EF005D3450 /* IAPInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPInfo.swift; sourceTree = "<group>"; };
 		7E46468027AAB7AD00E87757 /* AppSubscriptionPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppSubscriptionPlugin.m; sourceTree = "<group>"; };
 		7E46468227AAB86A00E87757 /* AppSubscriptionPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSubscriptionPlugin.swift; sourceTree = "<group>"; };
 		7E46468527AABFC900E87757 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
@@ -52,6 +68,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */,
+				48519C8B27BAF0B600C8504C /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +78,7 @@
 		27E2DDA53C4D2A4D1A88CE4A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				48519C8A27BAF0B600C8504C /* StoreKit.framework */,
 				AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */,
 			);
 			name = Frameworks;
@@ -110,6 +128,13 @@
 			children = (
 				7E46468027AAB7AD00E87757 /* AppSubscriptionPlugin.m */,
 				7E46468227AAB86A00E87757 /* AppSubscriptionPlugin.swift */,
+				487A1EE627BA8EFB00FE7EB0 /* IAPHelper.swift */,
+				487A1EE827BA943A00FE7EB0 /* IAPHelper+AppStore.swift */,
+				487A1EEE27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift */,
+				487A1EEC27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift */,
+				487A1EF027BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift */,
+				487A1EEA27BA94BB00FE7EB0 /* IAPNotification.swift */,
+				79BE177727BAD4EF005D3450 /* IAPInfo.swift */,
 				7E46468527AABFC900E87757 /* Configuration.storekit */,
 			);
 			path = AppSubscription;
@@ -237,12 +262,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79BE177827BAD4EF005D3450 /* IAPInfo.swift in Sources */,
 				7E46468327AAB86A00E87757 /* AppSubscriptionPlugin.swift in Sources */,
+				487A1EEF27BA97C600FE7EB0 /* IAPHelper+SKPaymentTransactionObserver.swift in Sources */,
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				487A1EF127BA988400FE7EB0 /* IAPHelper+SKRequestDelegate.swift in Sources */,
 				7E46468127AAB7AD00E87757 /* AppSubscriptionPlugin.m in Sources */,
+				487A1EE727BA8EFB00FE7EB0 /* IAPHelper.swift in Sources */,
 				0F6D5CA82790D6CC00BBD3B3 /* HelloPlugin.swift in Sources */,
 				0F6D5CAA2790D7F500BBD3B3 /* HelloPlugin.m in Sources */,
+				487A1EED27BA975800FE7EB0 /* IAPHelper+SKProductsRequestDelegate.swift in Sources */,
 				0F6D5CA32790D60E00BBD3B3 /* EchoPlugin.swift in Sources */,
+				487A1EE927BA943A00FE7EB0 /* IAPHelper+AppStore.swift in Sources */,
+				487A1EEB27BA94BB00FE7EB0 /* IAPNotification.swift in Sources */,
 				0F6D5CA62790D65700BBD3B3 /* EchoPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,11 +415,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PGUD5RWNFH;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "studio.ae.restor-purchases";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "App/App-Bridging-Header.h";
@@ -404,10 +437,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PGUD5RWNFH;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "studio.ae.restor-purchases";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "App/App-Bridging-Header.h";

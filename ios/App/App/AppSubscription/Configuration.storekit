@@ -7,7 +7,7 @@
 
   ],
   "settings" : {
-
+    "_billingIssuesEnabled" : false
   },
   "subscriptionGroups" : [
     {
@@ -19,6 +19,9 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "0.99",
@@ -33,9 +36,34 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.app.subscription",
+          "productID" : "instill.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Subscription Yearly",
+          "subscriptionGroupID" : "5B8730DC",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "2ABB65AC",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "instill.monthly",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Default Subscription",
+          "referenceName" : "Subscription Monthly",
           "subscriptionGroupID" : "5B8730DC",
           "type" : "RecurringSubscription"
         }
@@ -44,6 +72,6 @@
   ],
   "version" : {
     "major" : 1,
-    "minor" : 1
+    "minor" : 2
   }
 }
