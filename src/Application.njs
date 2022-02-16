@@ -1,6 +1,6 @@
 import Nullstack from 'nullstack';
 import { registerPlugin } from '@capacitor/core';
-import { acknowledgePurchase, fetchSubscriptions } from './server/google-api'
+import { acknowledgePurchase, fetchSubscriptions } from './server/manageSubscriptions'
 
 const Echo = registerPlugin('Echo');
 const HelloPlugin = registerPlugin('Hello');
